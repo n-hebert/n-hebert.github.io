@@ -1,0 +1,12 @@
+_site
+.sass-cache
+.jekyll-cache
+.jekyll-metadata
+vendor
+
+# Emacs temp files
+*~
+#*
+
+# Orgmode generated
+_orgcss

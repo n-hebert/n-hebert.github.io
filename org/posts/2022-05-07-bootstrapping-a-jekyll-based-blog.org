@@ -1,0 +1,193 @@
+#+TITLE: Bootstrapping a Jekyll-based Blog
+#+STARTUP: showall
+#+OPTIONS: toc:nil
+#+BEGIN_EXPORT html
+---
+layout: post
+title: Bootstrapping a Jekyll-based Blog
+tags: [blogging, github-pages, jekyll]
+---
+<link rel="stylesheet" type="text/css" href="/assets/main.css" />
+<link rel="stylesheet" type="text/css" href="/_orgcss/site.css" />
+#+END_EXPORT
+* About
+This is a guide on how I bootstrapped my own Jekyll blog on GitHub pages.
+I took some tips from [[http://justinhj.github.io/2020/03/08/how-to-blog-with-org-mode.html][Justin]] (thanks Justin!) because he's also an OrgMode user. You don't need to mind OrgMode right now.
+
+Follow along if you like!
+* WTF Basics
+
+** The things I won't be teaching
+Before getting too deep, you should know what [[https://www.github.com][GitHub]] is ([[https://git-scm.com/][git]], too), and probably have some familiarity with [[https://www.ruby-lang.org/en/][Ruby]].
+Less so, you should be aware of its utilities [[https://rubygems.org/][Gem]] and [[https://bundler.io/][Bundler]].
+
+Finally, I live in a terminal, so expect very few shiny GUIs: grab your closest terminal (gnome-terminal, iTerm2, what have you) and I'll be in [[http://guake-project.org/index.html][Guake]] as I normally am at any given moment in the day.
+
+In short, this won't be your doorway into programming or computer science.
+
+** Things I will be teaching
+
+We're going to discover how to use [[https://pages.github.com/][GitHub pages]] (basic cases), which is primarily driven by [[https://jekyllrb.com/][Jekyll]].
+I'm going to cover the "what do you do" to "what do you get" bits, particularly the hairy first-time fool ends of it.
+It works via the magic of [[https://github.com/features/actions][GitHub Actions]] which (if you are not already well-versed), you should [[https://en.wikipedia.org/wiki/Black_box][Black box]] as quickly as you can: things go in, magic comes out.
+
+In order to make this apple pie from scratch, we need to first ignore the universe -- sorry, [[https://www.youtube.com/watch?v=7s664NsLeFM][Sagan]].
+
+* Jekyll?
+
+Yes -- [[https://jekyllrb.com/][Jekyll]].
+
+We don't need to know too much about it right now, so black box that, too. It's a magic web-page maker -- good enough.
+
+What we do need to know is the following things I learned out of order:
+    1. It's [[https://rubygems.org/gems/jekyll][a ruby gem]], so we'll be in that sort of territory
+    2. Its themes are [[https://rubygems.org/search?query=jekyll-theme][also ruby gems]], so you'll need to install them using Gem, as well, if you'd like to test locally.
+    3. You don't need to test locally, but it could be nice to see what you're saying before publishing -- the [[https://jekyllrb.com/docs/][Jekyll docs]] are quite friendly for helping there
+    4. If you fiddle with the right repository settings, GitHub will do operations on your Jekyll page for you.
+
+Regarding #4 there, GitHub have a bunch of [[https://github.com/orgs/pages-themes/repositories][pages themes]] which they will help you preview and apply once you have created your blog. But let's get that done before we go too far.
+
+* GitHub Pages
+
+GitHub have a great overview and basic tutorial (which this will supplant, skip their steps!) over at https://pages.github.com/.
+The issue is that that leave you with a pretty spartan index.html just saying "Hello world" in plain text. Ouch.
+
+Let's ... do a bit better.
+
+** First, how to get a web-page from GitHub
+
+While not all of the tutorial is super relevant, there is one bit worth quoting entirely. You can do this now or shortly, I'll remind you.
+#+BEGIN_QUOTE
+/Head over to GitHub and create a new public repository named username.github.io, where username is your username (or organization name) on GitHub./
+/If the first part of the repository doesn’t exactly match your username, it won’t work, so make sure to get it right./
+#+END_QUOTE
+
+Let's review this a bit: you might know that GitHub serves... well, GitHub, of course! And you might be lucky enough to know that various people have GitHub blogs or pages with their username at the front ending in `github.io`.
+If you know all that -- great! If not, to summarize it again more broadly: GitHub host their own website at the address `github.com`, but they'll also host a nice looking page of your own making on a `YOUR-USERNAME.github.io` page.
+If I did it right, and you aren't poking around in the source code somewhere, you're looking at one, friend!
+
+So, in effect, you need a very specific name of the repository and it magically becomes a custom web-page on a named sub-domain.
+That's a good enough black box for me! We aren't tinkering on that, so we don't need to know more.
+Let's move on knowing we need to create a repository with a particular name to get a website of our own.
+
+* Creating our own GitHub page
+
+** First, the repository
+
+If you didn't [[https://github.com/new][create a new repository]] named `YOUR-USERNAME.github.io` (please replace your actual username where implied, of course), then go ahead and do that now.
+You don't need any fancy settings -- just leave everything as it was when you arrived and fill out the name, a "click next, next, next, done" sort of thing.
+We only care to change what highlights in red if we ignore everything and hit next.
+
+Clone that new repo down and and, "hooray?" -- it's empty.
+
+** Next, ~bundler~ and jekyll
+
+Originally, I ran `bundle init` and tried adding Jekyll as a gem, but that's not the best way of bootstrapping this project.
+Hopefully you got Jekyll installed above. If not, go complete the steps at the [[https://jekyllrb.com/docs/][Jekyll docs]]. We'll need it before proceeding.
+
+Jekyll will be quite a bit wiser in setting things up if we go directly to it.
+
+In your terminal, change to the directory you have cloned down and run: `jekyll new .`
+
+The period is not a typo here, we are telling Jekyll to create the blog at this site.
+(Technically, you could have also skipped `cd`ing into the directory and just pointed at it, but why so stand-off-ish? Let's get in there!)
+
+You should now have a Jekyll site. Let's test that theory!
+
+`bundle exec jekyll serve`!
+
+(pro-tip: we put `bundle exec` first so that we get the right version of Jekyll)
+
+** Who the heck is a webrick and why is he upset?
+
+So, if your experiment is anything like mine (i.e. running on ruby 3 or greater). You may be greeted by this displeasing error output:
+#+BEGIN_SRC
+Configuration file: /tmp/tmp.qBw39uHlX2/_config.yml
+            Source: /tmp/tmp.qBw39uHlX2
+       Destination: /tmp/tmp.qBw39uHlX2/_site
+ Incremental build: disabled. Enable with --incremental
+      Generating... 
+       Jekyll Feed: Generating feed for posts
+                    done in 0.357 seconds.
+ Auto-regeneration: enabled for '/tmp/tmp.qBw39uHlX2'
+                    ------------------------------------------------
+      Jekyll 4.2.2   Please append `--trace` to the `serve` command 
+                     for any additional information or backtrace. 
+                    ------------------------------------------------
+/home/nicholas/.rvm/gems/ruby-3.0.0/gems/jekyll-4.2.2/lib/jekyll/commands/serve/servlet.rb:3:in `require': cannot load such file -- webrick (LoadError)
+	from /home/nicholas/.rvm/gems/ruby-3.0.0/gems/jekyll-4.2.2/lib/jekyll/commands/serve/servlet.rb:3:in `<top (required)>'
+	from /home/nicholas/.rvm/gems/ruby-3.0.0/gems/jekyll-4.2.2/lib/jekyll/commands/serve.rb:179:in `require_relative'
+	from /home/nicholas/.rvm/gems/ruby-3.0.0/gems/jekyll-4.2.2/lib/jekyll/commands/serve.rb:179:in `setup'
+	from /home/nicholas/.rvm/gems/ruby-3.0.0/gems/jekyll-4.2.2/lib/jekyll/commands/serve.rb:100:in `process'
+	from /home/nicholas/.rvm/gems/ruby-3.0.0/gems/jekyll-4.2.2/lib/jekyll/command.rb:91:in `block in process_with_graceful_fail'
+	from /home/nicholas/.rvm/gems/ruby-3.0.0/gems/jekyll-4.2.2/lib/jekyll/command.rb:91:in `each'
+	from /home/nicholas/.rvm/gems/ruby-3.0.0/gems/jekyll-4.2.2/lib/jekyll/command.rb:91:in `process_with_graceful_fail'
+	from /home/nicholas/.rvm/gems/ruby-3.0.0/gems/jekyll-4.2.2/lib/jekyll/commands/serve.rb:86:in `block (2 levels) in init_with_program'
+	from /home/nicholas/.rvm/gems/ruby-3.0.0/gems/mercenary-0.4.0/lib/mercenary/command.rb:221:in `block in execute'
+	from /home/nicholas/.rvm/gems/ruby-3.0.0/gems/mercenary-0.4.0/lib/mercenary/command.rb:221:in `each'
+	from /home/nicholas/.rvm/gems/ruby-3.0.0/gems/mercenary-0.4.0/lib/mercenary/command.rb:221:in `execute'
+	from /home/nicholas/.rvm/gems/ruby-3.0.0/gems/mercenary-0.4.0/lib/mercenary/program.rb:44:in `go'
+	from /home/nicholas/.rvm/gems/ruby-3.0.0/gems/mercenary-0.4.0/lib/mercenary.rb:21:in `program'
+	from /home/nicholas/.rvm/gems/ruby-3.0.0/gems/jekyll-4.2.2/exe/jekyll:15:in `<top (required)>'
+	from /home/nicholas/.rvm/gems/ruby-3.0.0/bin/jekyll:23:in `load'
+	from /home/nicholas/.rvm/gems/ruby-3.0.0/bin/jekyll:23:in `<main>'
+#+END_SRC
+
+As always, type some of this into Google and [[https://stackoverflow.com/questions/65989040/bundle-exec-jekyll-serve-cannot-load-such-file]['lo]] - there is a StackOverflow answer where folks have seen this exact error.
+The joys of computer programming -- our Ruby is too new and the folks at Jekyll clearly haven't pinned down quite why or where webrick is or is not needed, so they let us enjoy the pains of figuring it out.
+
+Not a perfect #DX moment, but let's move on.
+Slam `gem "webrick"` unceremoniously into your Gemfile under the `gem "jekyll"` line, learning literally nothing about it, run `bundle` again (which implies `bundle install`; less typing is better typing!), and prepare for more fanfare with less [[https://sadtrombone.com/][sad trombone]]!
+
+Ta-da!
+
+#+BEGIN_SRC
+Configuration file: /tmp/tmp.qBw39uHlX2/_config.yml
+            Source: /tmp/tmp.qBw39uHlX2
+       Destination: /tmp/tmp.qBw39uHlX2/_site
+ Incremental build: disabled. Enable with --incremental
+      Generating... 
+       Jekyll Feed: Generating feed for posts
+                    done in 0.337 seconds.
+ Auto-regeneration: enabled for '/tmp/tmp.qBw39uHlX2'
+    Server address: http://127.0.0.1:4000/
+  Server running... press ctrl-c to stop.
+#+END_SRC
+
+... It would be really nice if these sorts of programs could automagically call `xdg-open http://127.0.0.1:4000`, too, but that's a bit preferential.
+Open that web-page (you should be able to click what I just typed) and witness your marvel!
+
+** Uh, it didn't work
+
+Yeah, it didn't work for me, either.
+If it *did* work for you, just carry on.
+If it didn't however, try just picking up from the last verse and singing it again:
+
+#+BEGIN_SRC
+  $ bundle exec jekyll new . --force
+  $ vim Gemfile # add in webrick again
+  $ bundle
+  $ bundle exec jekyll serve
+#+END_SRC
+
+I ran this sort of flow a couple times to fix some things I borked while experimenting. No shame in experimenting! Humpty-dumpty, however, must go back together again.
+We have just set all this up so we aren't really attached to it. By ploughing over what goofs we made and sticking to the script, we should be able to reach our "ta-da" moment shortly.
+
+If so, hooray! If not... the student now becomes the teacher: begin googling and @me with your updated blog!
+
+(p.s. in my case, it was that I was trying to set a different theme in `_config.yml` too early in the game before even getting things running and it was causing build errors)
+
+** Uploading
+
+Once you see a pretty site, it's time to add all those files, commit them, push and watch the magic happen on GitHub!
+It won't be instantaneous. Go to the "Actions" tab and make sure the build completes successfully. Otherwise, you'll need to debug it!
+
+If all succeeds, head to `YOUR-USER.github.io` and - boom! - you're a blogger!
+
+* What's next?
+
+Well, actually blogging for one.
+We bootstrapped in, but this is very "not ours" and we would like it to be "even somewhat ours".
+Next time, we may talk about making posts or something as such.
+
+Maybe! Try it without me, first!
