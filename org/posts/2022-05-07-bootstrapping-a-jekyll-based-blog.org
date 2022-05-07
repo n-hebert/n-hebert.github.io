@@ -50,7 +50,7 @@ Regarding #4 there, GitHub have a bunch of [[https://github.com/orgs/pages-theme
 * GitHub Pages
 
 GitHub have a great overview and basic tutorial (which this will supplant, skip their steps!) over at https://pages.github.com/.
-The issue is that that leave you with a pretty spartan index.html just saying "Hello world" in plain text. Ouch.
+The issue is that they leave you with a pretty spartan index.html just saying "Hello world" in plain text. Ouch.
 
 Let's ... do a bit better.
 
