@@ -103,15 +103,14 @@ No I don't mean "nevermind", I mean <a href="https://github.com/nvm-sh/nvm">Node
 If you know you already have <code>`node`</code> or <code>`npm`</code> (globally) installed, rip 'em out using your operating system and let's use <code>`nvm`</code> instead.
 While installing <code>`nvm`</code>, it will ask you to add some lines to your shell environment variables (in the RC file), so do follow that as well or you may end up with missing commands later.
 </p>
+</div>
 
+<div id="outline-container-org54cef9c" class="outline-4">
+<h4 id="org54cef9c">Installing Node (LTS) &amp; setting it as default</h4>
+<div class="outline-text-4" id="text-org54cef9c">
 <p>
 We want to stick with something that's supported by Amplify (see their <a href="https://docs.amplify.aws/cli/start/install/">install instructions</a>) but also not too bleeding edge to avoid getting burnt on new troubles. I recommend the LTS (long-term support) version of Node, so run:
 </p>
-</div>
-
-<div id="outline-container-org1b6993e" class="outline-4">
-<h4 id="org1b6993e">Installing NVM &amp; setting the default</h4>
-<div class="outline-text-4" id="text-org1b6993e">
 <pre class="example">
 $ nvm install --lts
 $ nvm alias default node

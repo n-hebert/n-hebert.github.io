@@ -49,9 +49,9 @@ No I don't mean "nevermind", I mean [[https://github.com/nvm-sh/nvm][Node Versio
 If you know you already have =`node`= or =`npm`= (globally) installed, rip 'em out using your operating system and let's use =`nvm`= instead.
 While installing =`nvm`=, it will ask you to add some lines to your shell environment variables (in the RC file), so do follow that as well or you may end up with missing commands later.
 
-We want to stick with something that's supported by Amplify (see their [[https://docs.amplify.aws/cli/start/install/][install instructions]]) but also not too bleeding edge to avoid getting burnt on new troubles. I recommend the LTS (long-term support) version of Node, so run:
+*** Installing Node (LTS) & setting it as default
 
-*** Installing NVM & setting the default
+We want to stick with something that's supported by Amplify (see their [[https://docs.amplify.aws/cli/start/install/][install instructions]]) but also not too bleeding edge to avoid getting burnt on new troubles. I recommend the LTS (long-term support) version of Node, so run:
 #+BEGIN_SRC
   $ nvm install --lts
   $ nvm alias default node
