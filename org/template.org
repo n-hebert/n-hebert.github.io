@@ -1,0 +1,13 @@
+#+TITLE: @Put your title here@
+#+STARTUP: showall
+#+OPTIONS: toc:nil
+#+BEGIN_EXPORT html
+---
+layout: post
+title: @Put your title here@
+tags: [tags, go, here]
+---
+<link rel="stylesheet" type="text/css" href="/assets/main.css" />
+<link rel="stylesheet" type="text/css" href="/_orgcss/site.css" />
+#+END_EXPORT
+#+TOC: headlines 2
