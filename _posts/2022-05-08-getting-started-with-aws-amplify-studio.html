@@ -1,0 +1,387 @@
+---
+layout: post
+title: Getting started with AWS Amplify Studio
+tags: [aws, amplify, serverless, webdev, react]
+---
+<link rel="stylesheet" type="text/css" href="/assets/main.css" />
+<link rel="stylesheet" type="text/css" href="/_orgcss/site.css" />
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#orga27009d">About</a></li>
+<li><a href="#orgecdd437">Assumptions</a></li>
+<li><a href="#org3a1882e">What's Amplify Studio?</a></li>
+<li><a href="#orga0bc23e">Prerequisites</a></li>
+<li><a href="#org6bca582">Getting started with the CLI</a>
+<ul>
+<li><a href="#org7ec4d6b">But first: npm? nvm.</a></li>
+<li><a href="#org25886e6">Finally getting the CLI</a></li>
+<li><a href="#org24e11ab">Sing along! Follow the bouncing ball</a></li>
+<li><a href="#org4fbaa17">Amplify Init!</a></li>
+<li><a href="#orgfc6fa0c">Uhh, amplify pull?</a></li>
+<li><a href="#orgfe73a60">Filling in the blanks</a></li>
+</ul>
+</li>
+<li><a href="#orge8dc5c9">Your local workspace</a></li>
+<li><a href="#org128e0a9">What's next? Further learning!</a></li>
+</ul>
+</div>
+</div>
+<div id="outline-container-orga27009d" class="outline-2">
+<h2 id="orga27009d">About</h2>
+<div class="outline-text-2" id="text-orga27009d">
+<p>
+This is going to be a small introduction to getting started with <a href="https://docs.amplify.aws/">Amplify Studio</a>.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgecdd437" class="outline-2">
+<h2 id="orgecdd437">Assumptions</h2>
+<div class="outline-text-2" id="text-orgecdd437">
+<p>
+Before you continue, I have assumed a few things about you. Here's a minimum list of obvious assumptions to me right now:
+</p>
+
+<ul class="org-ul">
+<li>You have the user rights and the proper know-how to (un)install programs via your GUIs and/or terminal</li>
+<li>You know how to work a terminal (BASH is assumed, so edit mentally for ZSH where appropriate if you're on a Mac) and know what a CLI is</li>
+<li>You have your AWS credentials configured</li>
+</ul>
+
+<p>
+Doubtlessly I assume more than this (that you can read English, that you have a computer, that you are a human on Earth), but let's press brazenly forward anyhow.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org3a1882e" class="outline-2">
+<h2 id="org3a1882e">What's Amplify Studio?</h2>
+<div class="outline-text-2" id="text-org3a1882e">
+<p>
+Amplify Studio is a <a href="https://aws.amazon.com/blogs/aws/announcing-the-general-availability-of-aws-amplify-studio/">recently released</a> web IDE of a sorts that can help you quickly spin up a serverless web app using <a href="https://reactjs.org/">React</a> (alongside many other UI frameworks) and <a href="https://aws.amazon.com/lambda/">AWS Lambda</a>.
+Consider it an alternative to something like <a href="https://www.serverless.com/">Severless Framework</a> or other <a href="https://landscape.cncf.io/serverless">CNCF Frameworks</a>.
+</p>
+
+<p>
+That's all me guessing, though. Definitions are slippery, so let's just say that it helps you make web-apps and we'll move on.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orga0bc23e" class="outline-2">
+<h2 id="orga0bc23e">Prerequisites</h2>
+<div class="outline-text-2" id="text-orga0bc23e">
+<p>
+We're going to need to have a holistic understanding of web development and our own AWS Account (though the <a href="https://sandbox.amplifyapp.com/">Sandbox</a> does <b>not</b> require that, if you don't have one and want to explore on your own).
+I won't be covering React itself (I don't even know React, so you're in good company), nor JavaScript, nor AWS foundations.
+</p>
+
+<p>
+Try <a href="https://explore.skillbuilder.aws/">AWS Skillbuilder</a> if you're new to AWS cloud. You can also follow the trail towards a <a href="https://aws.amazon.com/certification/">Certification</a>. Even simply the efforts towards such a thing are well spent.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org6bca582" class="outline-2">
+<h2 id="org6bca582">Getting started with the CLI</h2>
+<div class="outline-text-2" id="text-org6bca582">
+</div>
+<div id="outline-container-org7ec4d6b" class="outline-3">
+<h3 id="org7ec4d6b">But first: npm? nvm.</h3>
+<div class="outline-text-3" id="text-org7ec4d6b">
+<p>
+<i>(Never going to use Node or JavaScript? Skip this heading and just run the <code>`cURL`</code> command listed on <a href="https://docs.amplify.aws/cli/start/install/">the Amplify install docs</a>.)</i>
+</p>
+
+<p>
+No I don't mean "nevermind", I mean <a href="https://github.com/nvm-sh/nvm">Node Version Manager</a>. There's always something to do before you can do the something you want to do. In this case we install a version manager because managing multiple copies of node (which, understandably, you may not even want to do right now) is no fun. If you aren't convinced by the higher minded prize of cleanliness, do note that installing things globally can be problematic for security reasons or simply where you end up with versions colliding unflatteringly. So let's install nvm.
+</p>
+
+<p>
+If you know you already have <code>`node`</code> or <code>`npm`</code> (globally) installed, rip 'em out using your operating system and let's use <code>`nvm`</code> instead.
+Whil installing <code>`nvm`</code>, it will ask you to add some lines to your shell environment variables (in the RC file), so do follow that as well or you may end up with missing commands later.
+</p>
+
+<p>
+We want to stick with something that's supported by Amplify (see their <a href="https://docs.amplify.aws/cli/start/install/">install instructions</a>) but also not too bleeding edge to avoid getting burnt on new troubles. I recommend the LTS (long-term support) version of Node, so run:
+</p>
+</div>
+
+<div id="outline-container-org1b6993e" class="outline-4">
+<h4 id="org1b6993e">Installing NVM &amp; setting the default</h4>
+<div class="outline-text-4" id="text-org1b6993e">
+<pre class="example">
+$ nvm install --lts
+$ nvm alias default node
+</pre>
+
+
+<p>
+The first line grabs the LTS (if you'd like to take a look at what's otherwise available, try <code>`nvm ls-remote`</code>) and the second line sets it as default a bit magically.
+Effectively, it's some jargon to say "Always use the latest" and in our case we just have the one, so that's enough to get by.
+</p>
+
+<p>
+Test your settings by running <code>`node --version`</code> and <code>`npm --version`</code>. You should see <code>`v16.15.0`</code> as of current writing and <code>`8.5.5`</code>. Great! We're done right?
+</p>
+
+<p>
+Not so fast!
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgf430037" class="outline-4">
+<h4 id="orgf430037">Actually testing our work</h4>
+<div class="outline-text-4" id="text-orgf430037">
+<p>
+We don't really know if we are using nvm's packages, do we? This could still be a lingering global install or something else hinky. Maybe you were trying out <a href="https://volta.sh/">Volta</a>, which I hear is cool (ignore it for now, if you haven't been). My point still stands that you might be using something different than what you expect.
+Furthermore, we don't know if we have set up our variables properly in <code>`~/.bashrc`</code> (or <code>`~/.zshrc`</code>).
+</p>
+
+<p>
+How do we find that out? Luckily there's many ways to check on this. First, open a new terminal to ensure you haven't mucked with local environment variables. Then run,
+</p>
+
+<pre class="example">
+$ which nvm
+$ type nvm
+$ command -v nvm
+</pre>
+
+<p>
+You should see about the same thing from all of them. Pick your flavour &#x2013; they all do about the same thing with slight differences that you shouldn't need to care about right now. That being said, pack all of them in the same mental pocket for later, as sometimes one will fail you and the others won't and &#x2013; at that time &#x2013; you'll learn an interesting thing or two about <b>how</b> they behave.
+For now, we don't care. On my system these output: 
+</p>
+
+<pre class="example">
+$ which npm
+/home/nicholas/.nvm/versions/node/v16.15.0/bin/npm
+$ type npm
+npm is hashed (/home/nicholas/.nvm/versions/node/v16.15.0/bin/npm)
+$ command -v npm
+/home/nicholas/.nvm/versions/node/v16.15.0/bin/npm
+</pre>
+
+<p>
+So that looks excellent. The most important part of that is that we find these executables in a folder named ".nvm/versions" &#x2013; that's pretty much exactly what we expect.
+What if it's not working, what would that look like? Let's use the fake command <code>`foo`</code> to test.
+</p>
+
+<pre class="example">
+$ which foo
+which: no foo in (/home/nicholas/.rvm/gems/ruby-3.0.0/bin:/home/nicholas/.rvm/gems/ruby-3.0.0@global/bin:/home/nicholas/.rvm/rubies/ruby-3.0.0/bin [ETC.! CLIPPED])
+$ type foo
+bash: type: foo: not found
+$ command -v foo
+</pre>
+<p>
+If you see anything like this, stop and troubleshoot, as it means you didn't get it fully installed.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org25886e6" class="outline-3">
+<h3 id="org25886e6">Finally getting the CLI</h3>
+<div class="outline-text-3" id="text-org25886e6">
+<p>
+Now that we have all that background noise settled (Yaks <a href="http://catb.org/jargon/html/Y/yak-shaving.html">fully shaved</a>), we can move on with what we actually want to do: use AWS Amplify already!
+</p>
+
+<pre class="example">
+npm install -g @aws-amplify/cli
+</pre>
+
+<p>
+Did it work?
+Let's test:
+</p>
+
+<pre class="example">
+$ which amplify
+/home/nicholas/.nvm/versions/node/v16.15.0/bin/amplify
+$ type amplify
+amplify is hashed (/home/nicholas/.nvm/versions/node/v16.15.0/bin/amplify)
+$ command -v amplify
+/home/nicholas/.nvm/versions/node/v16.15.0/bin/amplify
+</pre>
+
+<p>
+Looks good to me! We should be able to run <code>`amplify`</code> and not see any immediate "command not found" errors.
+Again, you don't need to run all three at once; I'm simply drilling that they are similar functions (for preferences <code>`type`</code> is the shortest to type, yet the hardest to tell over a Slack Huddle &#x2013; hence I fall back to <code>`which`</code> quite commonly for social reasons).
+</p>
+</div>
+</div>
+
+<div id="outline-container-org24e11ab" class="outline-3">
+<h3 id="org24e11ab">Sing along! Follow the bouncing ball</h3>
+<div class="outline-text-3" id="text-org24e11ab">
+<p>
+Now it's time to <a href="https://docs.amplify.aws/cli/start/install/">follow the official docs</a>
+</p>
+</div>
+
+<div id="outline-container-orgee1b5e5" class="outline-4">
+<h4 id="orgee1b5e5">What to expect</h4>
+<div class="outline-text-4" id="text-orgee1b5e5">
+<p>
+When you run Amplify configure, the CLI will take you to various pages that you need to act on.
+Check your terminal for instructions and simply follow-through.
+</p>
+
+<p>
+You can watch their video guide of exactly what I'm going to say, but basically we need to:
+</p>
+<ol class="org-ol">
+<li>Sign in</li>
+<li>Choose our favourite region (try something near you)</li>
+<li>Get redirected to our browser and click "next" until we get a new user</li>
+<li>Copy back Access Key credentials to your terminal</li>
+<li>Save the profile</li>
+</ol>
+
+<p>
+If this is not the first time you're using the AWS CLI, then for #5, I recommend calling it <code>'amplify'</code> instead of nuking your <code>'default'</code> profile credentials!
+</p>
+
+<p>
+If you do follow that guidance, remember to either set <code>`AWS_PROFILE`</code> in each terminal session when you're doing Amplify work, or add <code>`--profile amplify`</code> to every AWS command. Here's an idea of what I mean:
+</p>
+
+<pre class="example">
+$ aws amplify --profile amplify list-apps # this is how you specify a profile once
+$ export AWS_PROFILE='amplify' # this is how you set it for the whole shell session
+$ aws amplify list-apps # this is now running in the 'amplify' profile
+</pre>
+
+<p>
+This is just background knowledge &#x2013; I haven't even confirmed this is necessary yet, so just tuck it away as "good to know" for now.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org4fbaa17" class="outline-3">
+<h3 id="org4fbaa17">Amplify Init!</h3>
+<div class="outline-text-3" id="text-org4fbaa17">
+<p>
+Now that you have the Amplify CLI, you can create a brand new Amplify app via <code>`amplify init`</code>!
+It will guide you through some questions and looks fairly intuitive.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgfc6fa0c" class="outline-3">
+<h3 id="orgfc6fa0c">Uhh, amplify pull?</h3>
+<div class="outline-text-3" id="text-orgfc6fa0c">
+<p>
+What's that? You already have a project? Wait, did you already click the shiny orange button in the <a href="https://console.aws.amazon.com/amplify">AWS Amplify Console</a>? Yeah, me too. No shame &#x2013; just click on it in the console, look under "Backend environments" towards the bottom. See that "Local setup instructions"?
+</p>
+
+<p>
+You can <code>`amplify pull`</code> this new project which you must have spent <b>just</b> as long as I did setting up (about a minute). Wouldn't want to lose all the effort there, right? Ok, jokes aside it's good to know that you can create an app on the console via <a href="https://www.lastweekinaws.com/blog/clickops/">ClickOps</a>, too, and still get your workspace downloaded if you need to.
+This is also something you'll want to be aware of if you change workstations.
+</p>
+</div>
+
+<div id="outline-container-orgf5b6563" class="outline-4">
+<h4 id="orgf5b6563">Auth'ing with amplify pull</h4>
+<div class="outline-text-4" id="text-orgf5b6563">
+<p>
+If you do run <code>`amplify pull`</code>, it opens a browser and gets you to authenticate.
+If you truly end up in the same position as I did, I created this app on the console and the <code>`pull`</code> command dumped me unceremoniously onto a login page for which I don't know which credentials to use. Uh-oh?
+</p>
+
+<p>
+If you end up in this position, try heading back to the Amplify console where you began, and click "Launch Studio" within your app of choice. It should bypass the login for you and then re-running the pull will instead prompt you with a "Log in to the CLI?" sort of page instead. Close one.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgfe73a60" class="outline-3">
+<h3 id="orgfe73a60">Filling in the blanks</h3>
+<div class="outline-text-3" id="text-orgfe73a60">
+<p>
+Regardless of whether you auth or pull, you may get asked a barrage of questions, such as
+</p>
+<pre class="example">
+? Choose your default editor: 
+? Choose the type of app that you're building?
+Please tell us about your project
+? What javascript framework are you using?
+? Source Directory Path: 
+? Distribution Directory Path:
+? Build Command: 
+? Start Command:
+? Do you plan on modifying this backend? 
+</pre>
+
+<p>
+You can happily slap enter until it shuts up on this one. We aren't advanced enough to care and all of this can be modified later (uh, &#x2026; I mean I have no clue, but judging from experience).
+The one trick question might be the last one &#x2013; theoretically we do plan on "modifying this backend", but it's a bit unclear right now what that means.
+</p>
+
+<p>
+Maybe it means to do coding? We are planning on doing coding. Yes is better than no in these cases, so "Yes".
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orge8dc5c9" class="outline-2">
+<h2 id="orge8dc5c9">Your local workspace</h2>
+<div class="outline-text-2" id="text-orge8dc5c9">
+<p>
+Now that you have <code>init</code>'ed or <code>pull</code>'ed, you should have a bunch of local files. Here's a snapshot of what got dumped in my workspace:
+</p>
+
+<pre class="example">
+$ find .
+.
+./src
+./src/aws-exports.js
+./.gitignore
+./amplify
+./amplify/.config
+./amplify/.config/project-config.json
+./amplify/.config/local-env-info.json
+./amplify/.config/local-aws-info.json
+./amplify/team-provider-info.json
+./amplify/#current-cloud-backend
+./amplify/#current-cloud-backend/tags.json
+./amplify/#current-cloud-backend/awscloudformation
+./amplify/#current-cloud-backend/awscloudformation/build
+./amplify/#current-cloud-backend/awscloudformation/build/root-cloudformation-stack.json
+./amplify/#current-cloud-backend/amplify-meta.json
+./amplify/backend
+./amplify/backend/backend-config.json
+./amplify/backend/tags.json
+./amplify/backend/types
+./amplify/backend/types/amplify-dependent-resources-ref.d.ts
+./amplify/backend/awscloudformation
+./amplify/backend/awscloudformation/build
+./amplify/backend/awscloudformation/build/root-cloudformation-stack.json
+./amplify/backend/amplify-meta.json
+./amplify/cli.json
+</pre>
+</div>
+</div>
+
+<div id="outline-container-org128e0a9" class="outline-2">
+<h2 id="org128e0a9">What's next? Further learning!</h2>
+<div class="outline-text-2" id="text-org128e0a9">
+<p>
+Now that you've gotten a basic app up, we need to dig into these files and start figuring out what we can do vs. what we want to do.
+I've no clue, yet! Feel free to learn alongside me. I barely have a plan for what I'm learning, so that's probably the next thing I'll be doing offline is digging into these and discovering what I would like to build.
+Bit of a <a href="https://www.ycombinator.com/library/8g-how-to-get-startup-ideas">Solution in Search of a Problem</a>, but that's how <a href="https://learningsolutionsmag.com/articles/change-learning-mindset-from-top-down-to-bottom-up">bottom-up learning</a> (which I highly encourage!) tends to be, anyway.
+</p>
+
+<p>
+For brass tacks here, checkout <a href="https://docs.amplify.aws/cli/start/workflows/">the workflows guide</a> for the Amplify CLI and also try perusing the <a href="https://aws.amazon.com/amplify/blog/">AWS Amplify Blog</a> for more valuable insight. There's lots of content there to get your ideas going!
+</p>
+</div>
+</div>

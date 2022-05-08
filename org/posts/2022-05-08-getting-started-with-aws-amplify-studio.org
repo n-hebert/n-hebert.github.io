@@ -1,0 +1,233 @@
+#+TITLE: Getting started with AWS Amplify Studio
+#+STARTUP: showall
+#+OPTIONS: toc:nil
+#+BEGIN_EXPORT html
+---
+layout: post
+title: Getting started with AWS Amplify Studio
+tags: [aws, amplify, serverless, webdev, react]
+---
+<link rel="stylesheet" type="text/css" href="/assets/main.css" />
+<link rel="stylesheet" type="text/css" href="/_orgcss/site.css" />
+#+END_EXPORT
+#+TOC: headlines 2
+* About
+This is going to be a small introduction to getting started with [[https://docs.amplify.aws/][Amplify Studio]].
+
+* Assumptions
+
+Before you continue, I have assumed a few things about you. Here's a minimum list of obvious assumptions to me right now:
+
+ - You have the user rights and the proper know-how to (un)install programs via your GUIs and/or terminal
+ - You know how to work a terminal (BASH is assumed, so edit mentally for ZSH where appropriate if you're on a Mac) and know what a CLI is
+ - You have your AWS credentials configured
+
+Doubtlessly I assume more than this (that you can read English, that you have a computer, that you are a human on Earth), but let's press brazenly forward anyhow.
+
+* What's Amplify Studio?
+
+Amplify Studio is a [[https://aws.amazon.com/blogs/aws/announcing-the-general-availability-of-aws-amplify-studio/][recently released]] web IDE of a sorts that can help you quickly spin up a serverless web app using [[https://reactjs.org/][React]] (alongside many other UI frameworks) and [[https://aws.amazon.com/lambda/][AWS Lambda]].
+Consider it an alternative to something like [[https://www.serverless.com/][Severless Framework]] or other [[https://landscape.cncf.io/serverless][CNCF Frameworks]].
+
+That's all me guessing, though. Definitions are slippery, so let's just say that it helps you make web-apps and we'll move on.
+
+* Prerequisites
+
+We're going to need to have a holistic understanding of web development and our own AWS Account (though the [[https://sandbox.amplifyapp.com/][Sandbox]] does *not* require that, if you don't have one and want to explore on your own).
+I won't be covering React itself (I don't even know React, so you're in good company), nor JavaScript, nor AWS foundations.
+
+Try [[https://explore.skillbuilder.aws/][AWS Skillbuilder]] if you're new to AWS cloud. You can also follow the trail towards a [[https://aws.amazon.com/certification/][Certification]]. Even simply the efforts towards such a thing are well spent.
+
+* Getting started with the CLI
+
+** But first: npm? nvm.
+
+/(Never going to use Node or JavaScript? Skip this heading and just run the =`cURL`= command listed on [[https://docs.amplify.aws/cli/start/install/][the Amplify install docs]].)/
+
+No I don't mean "nevermind", I mean [[https://github.com/nvm-sh/nvm][Node Version Manager]]. There's always something to do before you can do the something you want to do. In this case we install a version manager because managing multiple copies of node (which, understandably, you may not even want to do right now) is no fun. If you aren't convinced by the higher minded prize of cleanliness, do note that installing things globally can be problematic for security reasons or simply where you end up with versions colliding unflatteringly. So let's install nvm.
+
+If you know you already have =`node`= or =`npm`= (globally) installed, rip 'em out using your operating system and let's use =`nvm`= instead.
+Whil installing =`nvm`=, it will ask you to add some lines to your shell environment variables (in the RC file), so do follow that as well or you may end up with missing commands later.
+
+We want to stick with something that's supported by Amplify (see their [[https://docs.amplify.aws/cli/start/install/][install instructions]]) but also not too bleeding edge to avoid getting burnt on new troubles. I recommend the LTS (long-term support) version of Node, so run:
+
+*** Installing NVM & setting the default
+#+BEGIN_SRC
+  $ nvm install --lts
+  $ nvm alias default node
+#+END_SRC
+
+
+The first line grabs the LTS (if you'd like to take a look at what's otherwise available, try =`nvm ls-remote`=) and the second line sets it as default a bit magically.
+Effectively, it's some jargon to say "Always use the latest" and in our case we just have the one, so that's enough to get by.
+
+Test your settings by running =`node --version`= and =`npm --version`=. You should see =`v16.15.0`= as of current writing and =`8.5.5`=. Great! We're done right?
+
+Not so fast!
+
+*** Actually testing our work
+
+We don't really know if we are using nvm's packages, do we? This could still be a lingering global install or something else hinky. Maybe you were trying out [[https://volta.sh/][Volta]], which I hear is cool (ignore it for now, if you haven't been). My point still stands that you might be using something different than what you expect.
+Furthermore, we don't know if we have set up our variables properly in =`~/.bashrc`= (or =`~/.zshrc`=).
+
+How do we find that out? Luckily there's many ways to check on this. First, open a new terminal to ensure you haven't mucked with local environment variables. Then run,
+
+#+BEGIN_SRC
+  $ which nvm
+  $ type nvm
+  $ command -v nvm
+#+END_SRC
+
+You should see about the same thing from all of them. Pick your flavour -- they all do about the same thing with slight differences that you shouldn't need to care about right now. That being said, pack all of them in the same mental pocket for later, as sometimes one will fail you and the others won't and -- at that time -- you'll learn an interesting thing or two about *how* they behave.
+For now, we don't care. On my system these output: 
+
+#+BEGIN_SRC
+$ which npm
+/home/nicholas/.nvm/versions/node/v16.15.0/bin/npm
+$ type npm
+npm is hashed (/home/nicholas/.nvm/versions/node/v16.15.0/bin/npm)
+$ command -v npm
+/home/nicholas/.nvm/versions/node/v16.15.0/bin/npm
+#+END_SRC
+
+So that looks excellent. The most important part of that is that we find these executables in a folder named ".nvm/versions" -- that's pretty much exactly what we expect.
+What if it's not working, what would that look like? Let's use the fake command =`foo`= to test.
+
+#+BEGIN_SRC
+$ which foo
+which: no foo in (/home/nicholas/.rvm/gems/ruby-3.0.0/bin:/home/nicholas/.rvm/gems/ruby-3.0.0@global/bin:/home/nicholas/.rvm/rubies/ruby-3.0.0/bin [ETC.! CLIPPED])
+$ type foo
+bash: type: foo: not found
+$ command -v foo
+#+END_SRC
+If you see anything like this, stop and troubleshoot, as it means you didn't get it fully installed.
+
+** Finally getting the CLI
+
+Now that we have all that background noise settled (Yaks [[http://catb.org/jargon/html/Y/yak-shaving.html][fully shaved]]), we can move on with what we actually want to do: use AWS Amplify already!
+
+#+BEGIN_SRC
+npm install -g @aws-amplify/cli
+#+END_SRC
+
+Did it work?
+Let's test:
+
+#+BEGIN_SRC
+$ which amplify
+/home/nicholas/.nvm/versions/node/v16.15.0/bin/amplify
+$ type amplify
+amplify is hashed (/home/nicholas/.nvm/versions/node/v16.15.0/bin/amplify)
+$ command -v amplify
+/home/nicholas/.nvm/versions/node/v16.15.0/bin/amplify
+#+END_SRC
+
+Looks good to me! We should be able to run =`amplify`= and not see any immediate "command not found" errors.
+Again, you don't need to run all three at once; I'm simply drilling that they are similar functions (for preferences =`type`= is the shortest to type, yet the hardest to tell over a Slack Huddle -- hence I fall back to =`which`= quite commonly for social reasons).
+
+** Sing along! Follow the bouncing ball
+
+Now it's time to [[https://docs.amplify.aws/cli/start/install/][follow the official docs]]
+
+*** What to expect
+When you run Amplify configure, the CLI will take you to various pages that you need to act on.
+Check your terminal for instructions and simply follow-through.
+
+You can watch their video guide of exactly what I'm going to say, but basically we need to:
+ 1. Sign in
+ 2. Choose our favourite region (try something near you)
+ 3. Get redirected to our browser and click "next" until we get a new user
+ 4. Copy back Access Key credentials to your terminal
+ 5. Save the profile
+
+If this is not the first time you're using the AWS CLI, then for #5, I recommend calling it ='amplify'= instead of nuking your ='default'= profile credentials!
+
+If you do follow that guidance, remember to either set =`AWS_PROFILE`= in each terminal session when you're doing Amplify work, or add =`--profile amplify`= to every AWS command. Here's an idea of what I mean:
+
+#+BEGIN_SRC
+  $ aws amplify --profile amplify list-apps # this is how you specify a profile once
+  $ export AWS_PROFILE='amplify' # this is how you set it for the whole shell session
+  $ aws amplify list-apps # this is now running in the 'amplify' profile
+#+END_SRC
+
+This is just background knowledge -- I haven't even confirmed this is necessary yet, so just tuck it away as "good to know" for now.
+
+** Amplify Init!
+
+Now that you have the Amplify CLI, you can create a brand new Amplify app via =`amplify init`=!
+It will guide you through some questions and looks fairly intuitive.
+
+** Uhh, amplify pull?
+What's that? You already have a project? Wait, did you already click the shiny orange button in the [[https://console.aws.amazon.com/amplify][AWS Amplify Console]]? Yeah, me too. No shame -- just click on it in the console, look under "Backend environments" towards the bottom. See that "Local setup instructions"?
+
+You can =`amplify pull`= this new project which you must have spent *just* as long as I did setting up (about a minute). Wouldn't want to lose all the effort there, right? Ok, jokes aside it's good to know that you can create an app on the console via [[https://www.lastweekinaws.com/blog/clickops/][ClickOps]], too, and still get your workspace downloaded if you need to.
+This is also something you'll want to be aware of if you change workstations.
+
+*** Auth'ing with amplify pull
+If you do run =`amplify pull`=, it opens a browser and gets you to authenticate.
+If you truly end up in the same position as I did, I created this app on the console and the =`pull`= command dumped me unceremoniously onto a login page for which I don't know which credentials to use. Uh-oh?
+
+If you end up in this position, try heading back to the Amplify console where you began, and click "Launch Studio" within your app of choice. It should bypass the login for you and then re-running the pull will instead prompt you with a "Log in to the CLI?" sort of page instead. Close one.
+
+** Filling in the blanks
+
+Regardless of whether you auth or pull, you may get asked a barrage of questions, such as
+#+BEGIN_SRC
+? Choose your default editor: 
+? Choose the type of app that you're building?
+Please tell us about your project
+? What javascript framework are you using?
+? Source Directory Path: 
+? Distribution Directory Path:
+? Build Command: 
+? Start Command:
+? Do you plan on modifying this backend? 
+#+END_SRC
+
+You can happily slap enter until it shuts up on this one. We aren't advanced enough to care and all of this can be modified later (uh, ... I mean I have no clue, but judging from experience).
+The one trick question might be the last one -- theoretically we do plan on "modifying this backend", but it's a bit unclear right now what that means.
+
+Maybe it means to do coding? We are planning on doing coding. Yes is better than no in these cases, so "Yes".
+
+* Your local workspace
+Now that you have =init='ed or =pull='ed, you should have a bunch of local files. Here's a snapshot of what got dumped in my workspace:
+
+#+BEGIN_SRC
+$ find .
+.
+./src
+./src/aws-exports.js
+./.gitignore
+./amplify
+./amplify/.config
+./amplify/.config/project-config.json
+./amplify/.config/local-env-info.json
+./amplify/.config/local-aws-info.json
+./amplify/team-provider-info.json
+./amplify/#current-cloud-backend
+./amplify/#current-cloud-backend/tags.json
+./amplify/#current-cloud-backend/awscloudformation
+./amplify/#current-cloud-backend/awscloudformation/build
+./amplify/#current-cloud-backend/awscloudformation/build/root-cloudformation-stack.json
+./amplify/#current-cloud-backend/amplify-meta.json
+./amplify/backend
+./amplify/backend/backend-config.json
+./amplify/backend/tags.json
+./amplify/backend/types
+./amplify/backend/types/amplify-dependent-resources-ref.d.ts
+./amplify/backend/awscloudformation
+./amplify/backend/awscloudformation/build
+./amplify/backend/awscloudformation/build/root-cloudformation-stack.json
+./amplify/backend/amplify-meta.json
+./amplify/cli.json
+#+END_SRC
+
+* What's next? Further learning!
+
+Now that you've gotten a basic app up, we need to dig into these files and start figuring out what we can do vs. what we want to do.
+I've no clue, yet! Feel free to learn alongside me. I barely have a plan for what I'm learning, so that's probably the next thing I'll be doing offline is digging into these and discovering what I would like to build.
+Bit of a [[https://www.ycombinator.com/library/8g-how-to-get-startup-ideas][Solution in Search of a Problem]], but that's how [[https://learningsolutionsmag.com/articles/change-learning-mindset-from-top-down-to-bottom-up][bottom-up learning]] (which I highly encourage!) tends to be, anyway.
+
+For brass tacks here, checkout [[https://docs.amplify.aws/cli/start/workflows/][the workflows guide]] for the Amplify CLI and also try perusing the [[https://aws.amazon.com/amplify/blog/][AWS Amplify Blog]] for more valuable insight. There's lots of content there to get your ideas going!
+
+
