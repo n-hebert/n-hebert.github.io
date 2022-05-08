@@ -47,7 +47,7 @@ Try [[https://explore.skillbuilder.aws/][AWS Skillbuilder]] if you're new to AWS
 No I don't mean "nevermind", I mean [[https://github.com/nvm-sh/nvm][Node Version Manager]]. There's always something to do before you can do the something you want to do. In this case we install a version manager because managing multiple copies of node (which, understandably, you may not even want to do right now) is no fun. If you aren't convinced by the higher minded prize of cleanliness, do note that installing things globally can be problematic for security reasons or simply where you end up with versions colliding unflatteringly. So let's install nvm.
 
 If you know you already have =`node`= or =`npm`= (globally) installed, rip 'em out using your operating system and let's use =`nvm`= instead.
-Whil installing =`nvm`=, it will ask you to add some lines to your shell environment variables (in the RC file), so do follow that as well or you may end up with missing commands later.
+While installing =`nvm`=, it will ask you to add some lines to your shell environment variables (in the RC file), so do follow that as well or you may end up with missing commands later.
 
 We want to stick with something that's supported by Amplify (see their [[https://docs.amplify.aws/cli/start/install/][install instructions]]) but also not too bleeding edge to avoid getting burnt on new troubles. I recommend the LTS (long-term support) version of Node, so run:
 
