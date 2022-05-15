@@ -93,7 +93,7 @@ For fast action:
 
 <ol class="org-ol">
 <li>Stick a micro SD card in to your laptop where you have the <code>.xz</code> (bigger is better, faster is best)</li>
-<li>Check `fdisk -l | grep '<sup>Disk</sup> \/'` for your microSD card</li>
+<li>Check <code>`fdisk -l | grep '^Disk \/'`</code> for your microSD card</li>
 <li>Prepare for imminent destruction of all data on the disk</li>
 <li><code>`xzcat Manjaro-ARM-plasma-mobile-dev-pinephone-20220515.img.xz | sudo dd of=/dev/YOUR_SDCARD_PLZ bs=1M`</code></li>
 </ol>

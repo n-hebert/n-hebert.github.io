@@ -41,7 +41,7 @@ To be slow and boring, read the [[https://wiki.pine64.org/index.php/PinePhone_In
 For fast action:
 
 1. Stick a micro SD card in to your laptop where you have the =.xz= (bigger is better, faster is best)
-2. Check `fdisk -l | grep '^Disk \/'` for your microSD card
+2. Check =`fdisk -l | grep '^Disk \/'`= for your microSD card
 3. Prepare for imminent destruction of all data on the disk
 4. =`xzcat Manjaro-ARM-plasma-mobile-dev-pinephone-20220515.img.xz | sudo dd of=/dev/YOUR_SDCARD_PLZ bs=1M`=
 
