@@ -73,9 +73,9 @@ Furthermore, we don't know if we have set up our variables properly in =`~/.bash
 How do we find that out? Luckily there's many ways to check on this. First, open a new terminal to ensure you haven't mucked with local environment variables. Then run,
 
 #+BEGIN_SRC
-  $ which nvm
-  $ type nvm
-  $ command -v nvm
+  $ which npm
+  $ type npm
+  $ command -v npm
 #+END_SRC
 
 You should see about the same thing from all of them. Pick your flavour -- they all do about the same thing with slight differences that you shouldn't need to care about right now. That being said, pack all of them in the same mental pocket for later, as sometimes one will fail you and the others won't and -- at that time -- you'll learn an interesting thing or two about *how* they behave.
