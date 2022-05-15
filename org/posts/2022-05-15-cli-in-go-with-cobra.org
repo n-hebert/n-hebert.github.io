@@ -1,0 +1,235 @@
+#+TITLE: Writing a CLI in Go with Cobra
+#+STARTUP: showall
+#+OPTIONS: toc:nil
+#+BEGIN_EXPORT html
+---
+layout: post
+title:  Writing a CLI in Go with Cobra
+tags: [golang, cli, cobra, beginner, tutorial]
+---
+<link rel="stylesheet" type="text/css" href="/assets/main.css" />
+<link rel="stylesheet" type="text/css" href="/_orgcss/site.css" />
+#+END_EXPORT
+#+TOC: headlines 2
+* About
+  :LOGBOOK:
+  CLOCK: [2022-05-15 Sun 00:53]--[2022-05-15 Sun 01:24] =>  0:31
+  - Setting up Makefile and other things on hummingbird
+  :END:
+
+I have been messing about with writing a CLI front-end at work a bit, and I decided I wanted to finally dive in on something a bit more flexible than my usual go-to (read: copious lines of BASH, now POSIX shell).
+
+A good colleague of mine [[https://github.com/davegallant][DG]] convinced me that Go was the solution a little while ago, but I hadn't gotten around to even breaking in. This is my attempt to break into coding a CLI in Go.
+
+** Prerequisite Knowledge
+    The basic prerequisites apply here: terminals, a bit of BASH and git, what a CLI is, computing in general.
+
+ As to Go(lang), I'm reputedly a clueless fool with respect to the language, so you're welcome to be one, too. Today we'll adjust that for hopefully both of us!
+ You should have a working install of [[https://go.dev/][Golang]], as I won't cover that. Unlike previous Ruby blogs, I didn't bother overdesigning this with [[https://github.com/moovweb/gvm][gvm]] -- I just installed the latest golang.
+** On wheels, and the reinvention thereof
+    :LOGBOOK:
+    CLOCK: [2022-05-15 Sun 00:25]--[2022-05-15 Sun 00:53] =>  0:28
+    :END:
+
+ I've mentioned [[https://en.wikipedia.org/wiki/Black_box][Black box'ing]] as a mental technique before, but it goes farther than just ignoring things that aren't relevant to you.
+ It also means to stand on the shoulders of giants and, particularly where you have something greater to do, letting libraries do the talking instead of reinventing the wheel.
+
+ We could figure out how to print to a screen and read input and whatnot in Go -- honestly, that's a phenomenal idea -- but it's just not what we're going for in the end.
+ Keep the end in mind, even when beginning! We're looking to black box all of that complexity so we can get working on what we care about -- our CLI front-end!
+
+ In other words, slam "golang cli" into [[https://duckduckgo.com/][DuckDuckGo]] or your search engine of choice and begin seeking something that can do all of that for you.
+ I typed "writing go cli", a little bit less search friendly, but it didn't take me long to immediately spot [[https://github.com/spf13/cobra][Cobra]] as a candidate.
+
+* [[https://github.com/spf13/cobra][Cobra]], installation and introspecting
+  :LOGBOOK:
+  CLOCK: [2022-05-15 Sun 01:24]--[2022-05-15 Sun 01:40] =>  0:16
+  - Just writing this bit
+  :END:
+    If you don't hang around these parts too often, then you'll have to take my word from it that [[https://github.com/spf13/cobra][Cobra]] looks phenomenally well built and cared for; I'll explain.
+
+A quick `sudo apt install cobra` on my workstation and it's downloaded. I can type `cobra` and immediately see great information (below):
+
+#+BEGIN_SRC
+$ cobra
+Cobra is a CLI library for Go that empowers applications.
+This application is a tool to generate the needed files
+to quickly create a Cobra application.
+
+Usage:
+  cobra [command]
+
+Available Commands:
+  add         Add a command to a Cobra Application
+  completion  Generate the autocompletion script for the specified shell
+  help        Help about any command
+  init        Initialize a Cobra Application
+
+Flags:
+  -a, --author string    author name for copyright attribution (default "YOUR NAME")
+      --config string    config file (default is $HOME/.cobra.yaml)
+  -h, --help             help for cobra
+  -l, --license string   name of license for the project
+      --viper            use Viper for configuration
+
+Use "cobra [command] --help" for more information about a command.
+#+END_SRC
+
+Hot damn!
+
+You're telling me it'll set up our project, let us fiddle with commands right from the outside, and even do completion for us?
+Com'on Cobra, say the word "ZShell" and my Mac friends are going to be so happy.
+
+#+BEGIN_SRC
+$ cobra completion
+Generate the autocompletion script for cobra for the specified shell.
+See each sub-command's help for details on how to use the generated script.
+
+Usage:
+  cobra completion [command]
+
+Available Commands:
+  bash        Generate the autocompletion script for bash
+  fish        Generate the autocompletion script for fish
+  powershell  Generate the autocompletion script for powershell
+  zsh         Generate the autocompletion script for zsh
+
+Flags:
+  -h, --help   help for completion
+
+Global Flags:
+  -a, --author string    author name for copyright attribution (default "YOUR NAME")
+      --config string    config file (default is $HOME/.cobra.yaml)
+  -l, --license string   name of license for the project
+      --viper            use Viper for configuration
+
+Use "cobra completion [command] --help" for more information about a command.
+#+END_SRC
+
+There it is, folks -- =`zsh`=! Honestly, what's left to do!? Oh right, all of the work.
+
+* Cobra init, and bootstrapping a Go project
+  :LOGBOOK:
+  CLOCK: [2022-05-15 Sun 01:40]--[2022-05-15 Sun 01:55] =>  0:15
+  - Just writing
+  :END:
+   Firing up the engines, we do a `git init my-first-cli` and try `cobra init`.
+   
+#+BEGIN_SRC
+$ cobra init
+Error: Please run `go mod init <MODNAME>` before `cobra init`
+#+END_SRC
+
+Hm. Ok, nevermind -- we still have lots of work to do: I have no clue what this means.
+We could read the manual (=`cobra init --help`=), but we can also just hack and see what happens. Education shouldn't begin with dry reading (wait -- this blog isn't dry, right?).
+
+#+BEGIN_SRC
+$ go mod init my-second-go-cli
+go: creating new go.mod: module my-second-go-cli
+$ ls
+go.mod
+#+END_SRC
+
+"Uh, sure". So, firing up the engines, we do a ... you get it.
+#+BEGIN_SRC
+$ cobra init 
+Your Cobra application is ready at
+/home/nicholas/dev/my-first-go-cli
+$ ls
+cmd  go.mod  go.sum  LICENSE  main.go
+#+END_SRC
+
+Good enough for me! We got a package.
+
+I did a bit of googling and the standard way of running go things is just `go run main.go` (substituting the file at the end where appropriate, of course).
+Dry-running all of "our" hard effort (thanks, everyone else!), we see
+#+BEGIN_SRC
+$ go run main.go 
+A longer description that spans multiple lines and likely contains
+examples and usage of using your application. For example:
+
+Cobra is a CLI library for Go that empowers applications.
+This application is a tool to generate the needed files
+to quickly create a Cobra application.
+
+#+END_SRC
+
+Excellent. All is working according to plan. It doesn't seem to do anything, so let's get busy with that `cobra add` bit.
+
+#+BEGIN_SRC
+$ cobra add new-command
+newCommand created at /home/nicholas/dev/my-first-go-cli
+#+END_SRC
+
+Sure! So we're learning that Go is [[https://en.wikipedia.org/wiki/Camel_case][Camel cased]]. Fine by me, and I sure appreciate the gentle override! Sane conventions are important.
+How about now, brown cow?
+
+#+BEGIN_SRC
+$ go run main.go 
+A longer description that spans multiple lines and likely contains
+examples and usage of using your application. For example:
+
+Cobra is a CLI library for Go that empowers applications.
+This application is a tool to generate the needed files
+to quickly create a Cobra application.
+
+Usage:
+  my-first-go-cli [command]
+
+Available Commands:
+  completion  Generate the autocompletion script for the specified shell
+  help        Help about any command
+  newCommand  A brief description of your command
+
+Flags:
+  -h, --help     help for my-first-go-cli
+  -t, --toggle   Help message for toggle
+
+Use "my-first-go-cli [command] --help" for more information about a command.
+$ go run main.go newCommand
+newCommand called
+#+END_SRC
+
+And there it is.
+So once we actually do the work, this should be a seamless experience. Love it!
+
+If you haven't noticed by now, the [[https://en.wikipedia.org/wiki/Foobar][foobar]] boilerplate that Cobra adds actually helps us gently learn a bit more about Cobra. I like it!
+In those files, if you take a look, you can see the "longer description" in a string variable that it speaks of.
+
+** Questions
+
+Okay, so now we know that this is what we want, there are a couple questions lingering in my mind immediately.
+
+*** What's this 'cmd/' bit?
+    :LOGBOOK:
+    CLOCK: [2022-05-15 Sun 01:55]
+    :END:
+Again, as no Golang maven, I've no clue why we have a directory named "cmd".
+Luckily, a quick search of "golang project layout" yields some fairly [[https://github.com/golang-standards/project-layout][beefy results]]. I still don't feel like losing speed on dry documents right now, so I'll stow that one for later.
+Got a [[https://tutorialedge.net/golang/go-project-structure-best-practices/][quicker summary]], internet?
+
+Beautiful.
+
+So we now know that projects are pretty simple in Go. You stick a =`main.go`= into a folder and mostly call it done. As things get more complex you add folders.
+Having never done Go before, this is winning points in my all-enterprise-Java-but-BASH-in-my-spare-time based books.
+
+Let's crack open the one we got then, shall we?
+
+#+BEGIN_SRC
+$ cat main.go
+/*
+Copyright © 2022 NAME HERE <EMAIL ADDRESS>
+
+*/
+package main
+
+import "my-first-go-cli/cmd"
+
+func main() {
+	cmd.Execute()
+}
+#+END_SRC
+
+Yep.
+I mean, it doesn't get much simpler than that. Boilerplate comment, check. Package is main -- sure why not. Import our module which we initialized above, the... folder? file? something named 'cmd', check.
+
+=`cmd.Execute()`= !! [[https://www.youtube.com/watch?v=mxD-5z_xHBU][</Dalek voice>]]
