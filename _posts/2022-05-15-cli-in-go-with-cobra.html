@@ -1,0 +1,505 @@
+---
+layout: post
+title:  Writing a CLI in Go with Cobra
+tags: [golang, cli, cobra, beginner, tutorial]
+---
+<link rel="stylesheet" type="text/css" href="/assets/main.css" />
+<link rel="stylesheet" type="text/css" href="/_orgcss/site.css" />
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#orgfe3a904">About</a>
+<ul>
+<li><a href="#orgc47e26d">Prerequisite Knowledge</a></li>
+<li><a href="#orgb8829d8">On wheels, and the reinvention thereof</a></li>
+</ul>
+</li>
+<li><a href="#orgbbadb79">Cobra, installation and introspecting</a></li>
+<li><a href="#org4c4db7c">Cobra init, and bootstrapping a Go project</a></li>
+<li><a href="#org5add6f1">Exploring before proceeding</a>
+<ul>
+<li><a href="#orgbb6dcfb">"'Mango'? No, thanks, I just ate."</a></li>
+<li><a href="#orgfecf27d">What's this 'cmd/' bit?</a></li>
+<li><a href="#orga068eb7">Examining the root.go</a></li>
+<li><a href="#orgfa58e57">In summary, there's not much to summarize</a></li>
+</ul>
+</li>
+<li><a href="#orgf6da0cf">One last thing: Compiling</a>
+<ul>
+<li><a href="#orgd205a5f">But what about cross-compiling?</a></li>
+<li><a href="#orga05cb68">ARM, though?</a></li>
+</ul>
+</li>
+<li><a href="#org7633627">Fin</a></li>
+</ul>
+</div>
+</div>
+<div id="outline-container-orgfe3a904" class="outline-2">
+<h2 id="orgfe3a904">About</h2>
+<div class="outline-text-2" id="text-orgfe3a904">
+<p>
+I have been messing about with writing a CLI front-end at work a bit, and I decided I wanted to finally dive in on something a bit more flexible than my usual go-to (read: copious lines of once BASH, now POSIX, shell).
+The problem is that I'm targeting multiple architecture and operating systems and am tired of debugging environmental issues. (<code>`sed`</code> is different, <code>`read`</code> is different, even <code>`echo`</code> of all things behaves differently between Mac and Linux!)
+</p>
+
+<p>
+A good colleague of mine, <a href="https://github.com/davegallant">DG</a>, convinced me that Go was the solution a little while ago, but I hadn't gotten around to even breaking in. This is my attempt to break into coding a CLI in Go.
+</p>
+</div>
+
+<div id="outline-container-orgc47e26d" class="outline-3">
+<h3 id="orgc47e26d">Prerequisite Knowledge</h3>
+<div class="outline-text-3" id="text-orgc47e26d">
+<p>
+The basic prerequisites apply here: terminals, a bit of BASH and git, what a CLI is, computing in general.
+</p>
+
+<p>
+As to Go(lang), I'm reputedly a clueless fool with respect to the language, so you're welcome to be one, too. Perhaps today we'll adjust that for both of us!
+You <b>should</b> first have a working install of <a href="https://go.dev/">Golang</a>, as I won't cover that. Unlike previous Ruby blogs, I didn't bother over-designing this with <a href="https://github.com/moovweb/gvm">gvm</a> &#x2013; I just installed the latest golang.
+</p>
+</div>
+</div>
+<div id="outline-container-orgb8829d8" class="outline-3">
+<h3 id="orgb8829d8">On wheels, and the reinvention thereof</h3>
+<div class="outline-text-3" id="text-orgb8829d8">
+<p>
+I've mentioned <a href="https://en.wikipedia.org/wiki/Black_box">Black box'ing</a> as a mental technique before, but it goes farther than just ignoring things that aren't relevant to you.
+It also means to stand on the shoulders of giants and, particularly where you have something greater to do, letting libraries do the talking instead of reinventing the wheel.
+</p>
+
+<p>
+We could figure out how to print to a screen and read input and whatnot in Go &#x2013; honestly, that's a phenomenal idea &#x2013; but it's just not what we're going for in the end.
+Keep the end in mind, even when beginning! We're looking to black box all of that complexity so we can get working on what we care about &#x2013; our CLI front-end!
+</p>
+
+<p>
+In other words, slam "golang cli" into <a href="https://duckduckgo.com/">DuckDuckGo</a> or your search engine of choice and begin seeking something that can do all of that for you.
+I typed "writing go cli", a little bit less search friendly, but it didn't take me long to immediately spot <a href="https://github.com/spf13/cobra">Cobra</a> as a candidate.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgbbadb79" class="outline-2">
+<h2 id="orgbbadb79"><a href="https://github.com/spf13/cobra">Cobra</a>, installation and introspecting</h2>
+<div class="outline-text-2" id="text-orgbbadb79">
+<p>
+If you don't hang around these parts too often (e.g. working with <a href="https://docs.python.org/3/library/argparse.htmlhttps://docs.python.org/3/library/argparse.htmlhttps://docs.python.org/3/library/argparse.html">argparse</a>), then you'll have to take my word from it that <a href="https://github.com/spf13/cobra">Cobra</a> looks phenomenally well-built and cared for; I'll explain. Follow along in your terminal!
+</p>
+
+<p>
+A quick <code>`sudo apt install cobra`</code> on my workstation and it's downloaded. I can type <code>`cobra`</code> and immediately see great information (below):
+</p>
+
+<pre class="example">
+$ cobra
+Cobra is a CLI library for Go that empowers applications.
+This application is a tool to generate the needed files
+to quickly create a Cobra application.
+
+Usage:
+  cobra [command]
+
+Available Commands:
+  add         Add a command to a Cobra Application
+  completion  Generate the autocompletion script for the specified shell
+  help        Help about any command
+  init        Initialize a Cobra Application
+
+Flags:
+  -a, --author string    author name for copyright attribution (default "YOUR NAME")
+      --config string    config file (default is $HOME/.cobra.yaml)
+  -h, --help             help for cobra
+  -l, --license string   name of license for the project
+      --viper            use Viper for configuration
+
+Use "cobra [command] --help" for more information about a command.
+</pre>
+
+<p>
+Hot damn!
+</p>
+
+<p>
+You're telling me it'll set up our project, let us fiddle with commands right from the outside, and even do completion for us?
+Com'on Cobra, say the words "ZShell autocompletion" and my Mac friends are going to be so happy.
+</p>
+
+<pre class="example">
+$ cobra completion
+Generate the autocompletion script for cobra for the specified shell.
+See each sub-command's help for details on how to use the generated script.
+
+Usage:
+  cobra completion [command]
+
+Available Commands:
+  bash        Generate the autocompletion script for bash
+  fish        Generate the autocompletion script for fish
+  powershell  Generate the autocompletion script for powershell
+  zsh         Generate the autocompletion script for zsh
+
+Flags:
+  -h, --help   help for completion
+
+Global Flags:
+  -a, --author string    author name for copyright attribution (default "YOUR NAME")
+      --config string    config file (default is $HOME/.cobra.yaml)
+  -l, --license string   name of license for the project
+      --viper            use Viper for configuration
+
+Use "cobra completion [command] --help" for more information about a command.
+</pre>
+
+<p>
+There it is, folks &#x2013; <code>`zsh`</code>! Honestly, what's left to do!? Oh right, all of the work.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org4c4db7c" class="outline-2">
+<h2 id="org4c4db7c">Cobra init, and bootstrapping a Go project</h2>
+<div class="outline-text-2" id="text-org4c4db7c">
+<p>
+Firing up the engines, we do a <code>`git init my-first-cli`</code> and try <code>`cobra init`</code>.
+</p>
+
+<pre class="example">
+$ cobra init
+Error: Please run `go mod init &lt;MODNAME&gt;` before `cobra init`
+</pre>
+
+<p>
+Hm. Ok, nevermind &#x2013; we still have lots of work to do: I have no clue what this means.
+We could read the manual (<code>`cobra init --help`</code>), but we can also just hack and see what happens. Education shouldn't begin with dry reading (wait &#x2013; this blog isn't dry, right?).
+</p>
+
+<pre class="example">
+$ go mod init my-first-go-cli
+go: creating new go.mod: module my-first-go-cli
+$ ls
+go.mod
+</pre>
+
+<p>
+"Uh, sure". So, firing up the engines, we do a &#x2026; you get it.
+</p>
+<pre class="example">
+$ cobra init 
+Your Cobra application is ready at
+/home/nicholas/dev/my-first-go-cli
+$ ls
+cmd  go.mod  go.sum  LICENSE  main.go
+</pre>
+
+<p>
+Good enough for me! We have a project of some kind.
+</p>
+
+<p>
+I did a bit of googling and the standard way of running Golang things is just <code>`go run main.go`</code> (substituting the file at the end where appropriate, of course).
+Dry-running all of "our" hard effort (thanks, everyone else!), we see
+</p>
+<pre class="example">
+$ go run main.go
+A longer description that spans multiple lines and likely contains
+examples and usage of using your application. For example:
+
+Cobra is a CLI library for Go that empowers applications.
+This application is a tool to generate the needed files
+to quickly create a Cobra application.
+
+</pre>
+
+<p>
+Excellent. All is working according to plan. It doesn't seem to do anything, so let's get busy with that <code>`cobra add`</code> bit.
+</p>
+
+<pre class="example">
+$ cobra add new-command
+newCommand created at /home/nicholas/dev/my-first-go-cli
+</pre>
+
+<p>
+Sure! So we're learning that Go is <a href="https://en.wikipedia.org/wiki/Camel_case">Camel cased</a>. Fine by me, and I sure appreciate the gentle override! Sane conventions are important.
+<a href="https://idioms.thefreedictionary.com/How+now%2c+brown+cow%3f">How about now, brown cow?</a>
+</p>
+
+<pre class="example">
+$ go run main.go
+A longer description that spans multiple lines and likely contains
+examples and usage of using your application. For example:
+
+Cobra is a CLI library for Go that empowers applications.
+This application is a tool to generate the needed files
+to quickly create a Cobra application.
+
+Usage:
+  my-first-go-cli [command]
+
+Available Commands:
+  completion  Generate the autocompletion script for the specified shell
+  help        Help about any command
+  newCommand  A brief description of your command
+
+Flags:
+  -h, --help     help for my-first-go-cli
+  -t, --toggle   Help message for toggle
+
+Use "my-first-go-cli [command] --help" for more information about a command.
+$ go run main.go newCommand
+newCommand called
+</pre>
+
+<p>
+And there it is.
+So once we actually do the work, this should be a seamless experience. Love it!
+Also, if you haven't noticed yet, the <a href="https://en.wikipedia.org/wiki/Foobar">foobar</a> boilerplate that Cobra adds actually helps us gradually learn a bit more about Cobra. I like it!
+For example, if you look in the generated files, you can see the "longer description" in a string variable that it speaks of and it's a very natural way of finding out how to change it.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org5add6f1" class="outline-2">
+<h2 id="org5add6f1">Exploring before proceeding</h2>
+<div class="outline-text-2" id="text-org5add6f1">
+<p>
+Okay, so now we know that this is what we want, it's time to slow down and smell the roses a bit.
+We're going to be working directly with Cobra, so getting acquainted with what it has done so far before proceeding would be very wise.
+</p>
+</div>
+
+<div id="outline-container-orgbb6dcfb" class="outline-3">
+<h3 id="orgbb6dcfb">"'Mango'? No, thanks, I just ate."</h3>
+<div class="outline-text-3" id="text-orgbb6dcfb">
+<p>
+Again before things get too complex, what does a <code>`main.go`</code> look like anyway? Let's see.
+</p>
+<pre class="example">
+$ cat main.go
+/*
+Copyright © 2022 NAME HERE &lt;EMAIL ADDRESS&gt;
+
+*/
+package main
+
+import "my-first-go-cli/cmd"
+
+func main() {
+        cmd.Execute()
+}
+</pre>
+
+<p>
+Yep.
+I mean, it doesn't get much simpler than that. Boilerplate comment, check. Package is main &#x2013; sure why not. Import our module which we initialized above, the&#x2026; folder? file? something named 'cmd', check.
+</p>
+
+<p>
+<code>`cmd.Execute()`</code> !! <a href="https://www.youtube.com/watch?v=mxD-5z_xHBU">&lt;/Dalek voice&gt;</a>
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgfecf27d" class="outline-3">
+<h3 id="orgfecf27d">What's this 'cmd/' bit?</h3>
+<div class="outline-text-3" id="text-orgfecf27d">
+<p>
+The next quandary in my mind as no Golang maven: I've no clue why we have a directory named "cmd".
+Luckily, a quick search of "golang project layout" yields some fairly <a href="https://github.com/golang-standards/project-layout">beefy results</a>. I still don't feel like losing speed on dry documents right now, so I'll stow that one for later.
+Got a  quicker summary for me, internet?
+</p>
+
+<p>
+<a href="https://tutorialedge.net/golang/go-project-structure-best-practices/">Beautiful</a>.
+</p>
+
+<p>
+Taking a quick look inside the <code>`cmd/`</code> folder, the obvious guess was a winner.
+</p>
+</div>
+
+<div id="outline-container-org79f93db" class="outline-4">
+<h4 id="org79f93db">Yep, it's a package</h4>
+<div class="outline-text-4" id="text-org79f93db">
+
+<div class="figure">
+<p><img src="../../../assets/yep-thats-a-pigeon.jpg" alt="yep-thats-a-pigeon.jpg" />
+</p>
+</div>
+</div>
+</div>
+</div>
+
+
+<div id="outline-container-orga068eb7" class="outline-3">
+<h3 id="orga068eb7">Examining the root.go</h3>
+<div class="outline-text-3" id="text-orga068eb7">
+<p>
+So, let's in turn now look in the <code>`cmd`</code> folder more deeply.
+</p>
+
+<pre class="example">
+$ ls cmd
+newCommand.go root.go
+</pre>
+
+<p>
+Hm! <code>`root.go`</code>, eh? Well, I guess they can't all be <code>`main.go`</code>, why not.
+Opening that file will yield a bit more text than is worth dumping on the blog, but I directed my focus immediately to&#x2026;
+</p>
+
+<pre class="example">
+// Execute adds all child commands to the root command and sets flags appropriately.
+// This is called by main.main(). It only needs to happen once to the rootCmd.
+func Execute() {
+        err := rootCmd.Execute()
+        if err != nil {
+                os.Exit(1)
+        }
+}
+</pre>
+
+<p>
+There's our function. Things are starting to connect &#x2013; <code>`main.go`</code> imports <code>`root.go`</code> by calling its folder name (<code>`cmd`</code>) and then we address this function there.
+I'm sure there's lots to learn about module privacy and exporting functions and whatnot, but, right now, we don't really care.
+</p>
+
+<p>
+So, how coupled are all of the pieces of <code>`newCommand`</code> into the rest of these bits? I tend to use <code>`grep`</code> to answer a question like that (<code>`git grep`</code>, in this case, even).
+</p>
+
+<pre class="example">
+$ git grep newCommand
+cmd/newCommand.go:// newCommandCmd represents the newCommand command
+cmd/newCommand.go:var newCommandCmd = &amp;cobra.Command{
+cmd/newCommand.go:      Use:   "newCommand",
+cmd/newCommand.go:              fmt.Println("newCommand called")
+cmd/newCommand.go:      rootCmd.AddCommand(newCommandCmd)
+cmd/newCommand.go:      // newCommandCmd.PersistentFlags().String("foo", "", "A help for foo")
+cmd/newCommand.go:      // newCommandCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+</pre>
+
+<p>
+Hm! Ok, that's unexpected. I mean, I saw that <code>`main.go`</code> had nearly nothing in it, and <code>`root.go`</code>  didn't explicitly mention it, and <b>we only have 3 source files</b>, so you can feel free to call me out on this, but it was still pleasantly surprising to confirm how loosely coupled everything was.
+Somehow, <code>`go.mod`</code> (and it's corresponding hash file <code>`go.sum`</code>) are doing the heavy lifting here &#x2013; that'd be Cobra at work!
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgfa58e57" class="outline-3">
+<h3 id="orgfa58e57">In summary, there's not much to summarize</h3>
+<div class="outline-text-3" id="text-orgfa58e57">
+<p>
+So, we now know that projects and packages are both pretty simple in Go. For the former, you stick a <code>`main.go`</code> into a folder and mostly call it a day. As things get more complex you add some folders with a <code>`root.go`</code> (assumedly) and suddenly you have packages.
+</p>
+
+<p>
+While this may be the case for most programming languages, some can be pickier, and others begin a whole <code>`src/main/java/com/bar/foo/MyApp/AppComponent`</code> <a href="https://en.wikipedia.org/wiki/Journey_to_the_Center_of_the_Earth">Journey to the Center of the Earth</a>  (and thanks, Java, I hate it).
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgf6da0cf" class="outline-2">
+<h2 id="orgf6da0cf">One last thing: Compiling</h2>
+<div class="outline-text-2" id="text-orgf6da0cf">
+<p>
+One of the other major requirements for me is having a fully-compiled single front-end program that I can port to other architectures and operating systems.
+</p>
+
+<p>
+A quick search showed me some awesome looking <a href="https://go.dev/doc/tutorial/compile-install">official (?) Golang docs</a> that point out how to get a binary: <code>`go build`</code>!
+</p>
+
+<p>
+It prints nothing, but on an <code>`ls`</code>, I have a nice shiny <code>`my-first-go-cli`</code> executable staring back at me from the terminal. Hello, friend!
+</p>
+
+<pre class="example">
+$ ./my-first-go-cli
+A longer description that spans multiple lines and likely contains
+examples and usage of using your application. For example:
+
+Cobra is a CLI library for Go that empowers applications.
+This application is a tool to generate the needed files
+to quickly create a Cobra application.
+
+Usage:
+  my-first-go-cli [command]
+
+Available Commands:
+  completion  Generate the autocompletion script for the specified shell
+  help        Help about any command
+  newCommand  A brief description of your command
+
+Flags:
+  -h, --help     help for my-first-go-cli
+  -t, --toggle   Help message for toggle
+
+Use "my-first-go-cli [command] --help" for more information about a command.
+</pre>
+
+<p>
+We are in business!
+</p>
+</div>
+
+<div id="outline-container-orgd205a5f" class="outline-3">
+<h3 id="orgd205a5f">But what about cross-compiling?</h3>
+<div class="outline-text-3" id="text-orgd205a5f">
+<p>
+Let's hit the search again &#x2013; <code>`golang cross compile`</code>. Yeah, <a href="https://golangcookbook.com/chapters/running/cross-compiling/">LGTM</a> (looks good to me). Darwin is what Mac is called, for reasons I've been too lazy to look up.
+For the most part the story is going to be "because it is based off of something else named Darwin" and you'll never get to the bottom of what a "Darwin" truly is, so I sometimes fail to concern myself with these histories.
+</p>
+
+<pre class="example">
+$ GOOS=darwin  go build
+$ ls
+cmd  go.mod  go.sum  LICENSE  main.go  my-first-go-cli
+$ ./my-first-go-cli
+bash: ./my-first-go-cli: cannot execute binary file: Exec format error
+</pre>
+
+<p>
+Perfect. I don't have a test machine right now, but I assume that it did the right thing, as I expected exactly that kind of error if I'm on the wrong OS.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orga05cb68" class="outline-3">
+<h3 id="orga05cb68">ARM, though?</h3>
+<div class="outline-text-3" id="text-orga05cb68">
+<p>
+Another quick search, <code>`go cross compile arm darwin`</code>, and <a href="https://sodocumentation.net/go/topic/1020/cross-compilation">bam</a>! Magic table, pretty much what I expected &#x2013; either <code>`arm`</code> or <code>`arm64`</code> in another variable.
+</p>
+
+<pre class="example">
+$ GOOS=darwin GOARCH=arm64 go build
+$ ./my-first-go-cli 
+bash: ./my-first-go-cli: cannot execute binary file: Exec format error
+</pre>
+
+<p>
+This has been utterly painless.
+Throw that in a <a href="https://github.com/features/actions">GitHub Action</a> and call it a day. Easy!
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org7633627" class="outline-2">
+<h2 id="org7633627">Fin</h2>
+<div class="outline-text-2" id="text-org7633627">
+<p>
+I'd say it's about time to actually start cracking into what this CLI is going to do! That's a much less topic to blog about, so I'll end things here.
+Next, I'll probably need to actually learn Go. <a href="https://exercism.org/tracks/go">Exercism</a> is pretty great for picking up languages quickly, so I'll be doing that.
+</p>
+
+<p>
+I might blog more about Cobra if there's more interesting bits, but, for now: know of any other great Golang CLI library options I missed in my greedy search algorithm?
+</p>
+</div>
+</div>

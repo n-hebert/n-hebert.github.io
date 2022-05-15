@@ -1,5 +1,5 @@
-#+TITLE: Writing a CLI in Go with Cobra
 #+STARTUP: showall
+#+Title: Writing a CLI in Go with Cobra
 #+OPTIONS: toc:nil
 #+BEGIN_EXPORT html
 ---
@@ -13,22 +13,23 @@ tags: [golang, cli, cobra, beginner, tutorial]
 #+TOC: headlines 2
 * About
   :LOGBOOK:
-  CLOCK: [2022-05-15 Sun 00:53]--[2022-05-15 Sun 01:24] =>  0:31
+  CLOCK: [2022-05-15 Sun 06:53]--[2022-05-15 Sun 07:24] =>  0:31
   - Setting up Makefile and other things on hummingbird
   :END:
 
-I have been messing about with writing a CLI front-end at work a bit, and I decided I wanted to finally dive in on something a bit more flexible than my usual go-to (read: copious lines of BASH, now POSIX shell).
+I have been messing about with writing a CLI front-end at work a bit, and I decided I wanted to finally dive in on something a bit more flexible than my usual go-to (read: copious lines of once BASH, now POSIX, shell).
+The problem is that I'm targeting multiple architecture and operating systems and am tired of debugging environmental issues. (=`sed`= is different, =`read`= is different, even =`echo`= of all things behaves differently between Mac and Linux!)
 
-A good colleague of mine [[https://github.com/davegallant][DG]] convinced me that Go was the solution a little while ago, but I hadn't gotten around to even breaking in. This is my attempt to break into coding a CLI in Go.
+A good colleague of mine, [[https://github.com/davegallant][DG]], convinced me that Go was the solution a little while ago, but I hadn't gotten around to even breaking in. This is my attempt to break into coding a CLI in Go.
 
 ** Prerequisite Knowledge
-    The basic prerequisites apply here: terminals, a bit of BASH and git, what a CLI is, computing in general.
+   The basic prerequisites apply here: terminals, a bit of BASH and git, what a CLI is, computing in general.
 
- As to Go(lang), I'm reputedly a clueless fool with respect to the language, so you're welcome to be one, too. Today we'll adjust that for hopefully both of us!
- You should have a working install of [[https://go.dev/][Golang]], as I won't cover that. Unlike previous Ruby blogs, I didn't bother overdesigning this with [[https://github.com/moovweb/gvm][gvm]] -- I just installed the latest golang.
+As to Go(lang), I'm reputedly a clueless fool with respect to the language, so you're welcome to be one, too. Perhaps today we'll adjust that for both of us!
+You *should* first have a working install of [[https://go.dev/][Golang]], as I won't cover that. Unlike previous Ruby blogs, I didn't bother over-designing this with [[https://github.com/moovweb/gvm][gvm]] -- I just installed the latest golang.
 ** On wheels, and the reinvention thereof
     :LOGBOOK:
-    CLOCK: [2022-05-15 Sun 00:25]--[2022-05-15 Sun 00:53] =>  0:28
+    CLOCK: [2022-05-15 Sun 06:25]--[2022-05-15 Sun 06:53] =>  0:28
     :END:
 
  I've mentioned [[https://en.wikipedia.org/wiki/Black_box][Black box'ing]] as a mental technique before, but it goes farther than just ignoring things that aren't relevant to you.
@@ -42,12 +43,12 @@ A good colleague of mine [[https://github.com/davegallant][DG]] convinced me tha
 
 * [[https://github.com/spf13/cobra][Cobra]], installation and introspecting
   :LOGBOOK:
-  CLOCK: [2022-05-15 Sun 01:24]--[2022-05-15 Sun 01:40] =>  0:16
+  CLOCK: [2022-05-15 Sun 07:24]--[2022-05-15 Sun 07:40] =>  0:16
   - Just writing this bit
   :END:
-    If you don't hang around these parts too often, then you'll have to take my word from it that [[https://github.com/spf13/cobra][Cobra]] looks phenomenally well built and cared for; I'll explain.
+    If you don't hang around these parts too often (e.g. working with [[https://docs.python.org/3/library/argparse.htmlhttps://docs.python.org/3/library/argparse.htmlhttps://docs.python.org/3/library/argparse.html][argparse]]), then you'll have to take my word from it that [[https://github.com/spf13/cobra][Cobra]] looks phenomenally well-built and cared for; I'll explain. Follow along in your terminal!
 
-A quick `sudo apt install cobra` on my workstation and it's downloaded. I can type `cobra` and immediately see great information (below):
+A quick =`sudo apt install cobra`= on my workstation and it's downloaded. I can type =`cobra`= and immediately see great information (below):
 
 #+BEGIN_SRC
 $ cobra
@@ -77,7 +78,7 @@ Use "cobra [command] --help" for more information about a command.
 Hot damn!
 
 You're telling me it'll set up our project, let us fiddle with commands right from the outside, and even do completion for us?
-Com'on Cobra, say the word "ZShell" and my Mac friends are going to be so happy.
+Com'on Cobra, say the words "ZShell autocompletion" and my Mac friends are going to be so happy.
 
 #+BEGIN_SRC
 $ cobra completion
@@ -109,11 +110,11 @@ There it is, folks -- =`zsh`=! Honestly, what's left to do!? Oh right, all of th
 
 * Cobra init, and bootstrapping a Go project
   :LOGBOOK:
-  CLOCK: [2022-05-15 Sun 01:40]--[2022-05-15 Sun 01:55] =>  0:15
+  CLOCK: [2022-05-15 Sun 07:40]--[2022-05-15 Sun 07:55] =>  0:15
   - Just writing
   :END:
-   Firing up the engines, we do a `git init my-first-cli` and try `cobra init`.
-   
+   Firing up the engines, we do a =`git init my-first-cli`= and try =`cobra init`=.
+ 
 #+BEGIN_SRC
 $ cobra init
 Error: Please run `go mod init <MODNAME>` before `cobra init`
@@ -123,8 +124,8 @@ Hm. Ok, nevermind -- we still have lots of work to do: I have no clue what this 
 We could read the manual (=`cobra init --help`=), but we can also just hack and see what happens. Education shouldn't begin with dry reading (wait -- this blog isn't dry, right?).
 
 #+BEGIN_SRC
-$ go mod init my-second-go-cli
-go: creating new go.mod: module my-second-go-cli
+$ go mod init my-first-go-cli
+go: creating new go.mod: module my-first-go-cli
 $ ls
 go.mod
 #+END_SRC
@@ -138,12 +139,12 @@ $ ls
 cmd  go.mod  go.sum  LICENSE  main.go
 #+END_SRC
 
-Good enough for me! We got a package.
+Good enough for me! We have a project of some kind.
 
-I did a bit of googling and the standard way of running go things is just `go run main.go` (substituting the file at the end where appropriate, of course).
+I did a bit of googling and the standard way of running Golang things is just =`go run main.go`= (substituting the file at the end where appropriate, of course).
 Dry-running all of "our" hard effort (thanks, everyone else!), we see
 #+BEGIN_SRC
-$ go run main.go 
+$ go run main.go
 A longer description that spans multiple lines and likely contains
 examples and usage of using your application. For example:
 
@@ -153,7 +154,7 @@ to quickly create a Cobra application.
 
 #+END_SRC
 
-Excellent. All is working according to plan. It doesn't seem to do anything, so let's get busy with that `cobra add` bit.
+Excellent. All is working according to plan. It doesn't seem to do anything, so let's get busy with that =`cobra add`= bit.
 
 #+BEGIN_SRC
 $ cobra add new-command
@@ -161,10 +162,10 @@ newCommand created at /home/nicholas/dev/my-first-go-cli
 #+END_SRC
 
 Sure! So we're learning that Go is [[https://en.wikipedia.org/wiki/Camel_case][Camel cased]]. Fine by me, and I sure appreciate the gentle override! Sane conventions are important.
-How about now, brown cow?
+[[https://idioms.thefreedictionary.com/How+now%2c+brown+cow%3f][How about now, brown cow?]]
 
 #+BEGIN_SRC
-$ go run main.go 
+$ go run main.go
 A longer description that spans multiple lines and likely contains
 examples and usage of using your application. For example:
 
@@ -191,29 +192,17 @@ newCommand called
 
 And there it is.
 So once we actually do the work, this should be a seamless experience. Love it!
+Also, if you haven't noticed yet, the [[https://en.wikipedia.org/wiki/Foobar][foobar]] boilerplate that Cobra adds actually helps us gradually learn a bit more about Cobra. I like it!
+For example, if you look in the generated files, you can see the "longer description" in a string variable that it speaks of and it's a very natural way of finding out how to change it.
 
-If you haven't noticed by now, the [[https://en.wikipedia.org/wiki/Foobar][foobar]] boilerplate that Cobra adds actually helps us gently learn a bit more about Cobra. I like it!
-In those files, if you take a look, you can see the "longer description" in a string variable that it speaks of.
+* Exploring before proceeding
 
-** Questions
+Okay, so now we know that this is what we want, it's time to slow down and smell the roses a bit.
+We're going to be working directly with Cobra, so getting acquainted with what it has done so far before proceeding would be very wise.
 
-Okay, so now we know that this is what we want, there are a couple questions lingering in my mind immediately.
+** "'Mango'? No, thanks, I just ate."
 
-*** What's this 'cmd/' bit?
-    :LOGBOOK:
-    CLOCK: [2022-05-15 Sun 01:55]
-    :END:
-Again, as no Golang maven, I've no clue why we have a directory named "cmd".
-Luckily, a quick search of "golang project layout" yields some fairly [[https://github.com/golang-standards/project-layout][beefy results]]. I still don't feel like losing speed on dry documents right now, so I'll stow that one for later.
-Got a [[https://tutorialedge.net/golang/go-project-structure-best-practices/][quicker summary]], internet?
-
-Beautiful.
-
-So we now know that projects are pretty simple in Go. You stick a =`main.go`= into a folder and mostly call it done. As things get more complex you add folders.
-Having never done Go before, this is winning points in my all-enterprise-Java-but-BASH-in-my-spare-time based books.
-
-Let's crack open the one we got then, shall we?
-
+Again before things get too complex, what does a =`main.go`= look like anyway? Let's see.
 #+BEGIN_SRC
 $ cat main.go
 /*
@@ -233,3 +222,138 @@ Yep.
 I mean, it doesn't get much simpler than that. Boilerplate comment, check. Package is main -- sure why not. Import our module which we initialized above, the... folder? file? something named 'cmd', check.
 
 =`cmd.Execute()`= !! [[https://www.youtube.com/watch?v=mxD-5z_xHBU][</Dalek voice>]]
+
+** What's this 'cmd/' bit?
+    :LOGBOOK:
+    CLOCK: [2022-05-15 Sun 07:55]--[2022-05-15 Sun 08:25] =>  0:30
+    :END:
+The next quandary in my mind as no Golang maven: I've no clue why we have a directory named "cmd".
+Luckily, a quick search of "golang project layout" yields some fairly [[https://github.com/golang-standards/project-layout][beefy results]]. I still don't feel like losing speed on dry documents right now, so I'll stow that one for later.
+Got a  quicker summary for me, internet?
+
+[[https://tutorialedge.net/golang/go-project-structure-best-practices/][Beautiful]].
+
+Taking a quick look inside the =`cmd/`= folder, the obvious guess was a winner.
+
+***  Yep, it's a package
+
+ [[file:../../../assets/yep-thats-a-pigeon.jpg]]
+
+
+** Examining the root.go
+So, let's in turn now look in the =`cmd`= folder more deeply.
+
+#+BEGIN_SRC
+$ ls cmd
+newCommand.go root.go
+#+END_SRC
+
+Hm! =`root.go`=, eh? Well, I guess they can't all be =`main.go`=, why not.
+Opening that file will yield a bit more text than is worth dumping on the blog, but I directed my focus immediately to...
+
+#+BEGIN_SRC
+// Execute adds all child commands to the root command and sets flags appropriately.
+// This is called by main.main(). It only needs to happen once to the rootCmd.
+func Execute() {
+	err := rootCmd.Execute()
+	if err != nil {
+		os.Exit(1)
+	}
+}
+#+END_SRC
+
+There's our function. Things are starting to connect -- =`main.go`= imports =`root.go`= by calling its folder name (=`cmd`=) and then we address this function there.
+I'm sure there's lots to learn about module privacy and exporting functions and whatnot, but, right now, we don't really care.
+
+So, how coupled are all of the pieces of =`newCommand`= into the rest of these bits? I tend to use =`grep`= to answer a question like that (=`git grep`=, in this case, even).
+
+#+BEGIN_SRC
+$ git grep newCommand
+cmd/newCommand.go:// newCommandCmd represents the newCommand command
+cmd/newCommand.go:var newCommandCmd = &cobra.Command{
+cmd/newCommand.go:      Use:   "newCommand",
+cmd/newCommand.go:              fmt.Println("newCommand called")
+cmd/newCommand.go:      rootCmd.AddCommand(newCommandCmd)
+cmd/newCommand.go:      // newCommandCmd.PersistentFlags().String("foo", "", "A help for foo")
+cmd/newCommand.go:      // newCommandCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+#+END_SRC
+
+Hm! Ok, that's unexpected. I mean, I saw that =`main.go`= had nearly nothing in it, and =`root.go`=  didn't explicitly mention it, and *we only have 3 source files*, so you can feel free to call me out on this, but it was still pleasantly surprising to confirm how loosely coupled everything was.
+Somehow, =`go.mod`= (and it's corresponding hash file =`go.sum`=) are doing the heavy lifting here -- that'd be Cobra at work!
+
+** In summary, there's not much to summarize
+
+So, we now know that projects and packages are both pretty simple in Go. For the former, you stick a =`main.go`= into a folder and mostly call it a day. As things get more complex you add some folders with a =`root.go`= (assumedly) and suddenly you have packages.
+
+While this may be the case for most programming languages, some can be pickier, and others begin a whole =`src/main/java/com/bar/foo/MyApp/AppComponent`= [[https://en.wikipedia.org/wiki/Journey_to_the_Center_of_the_Earth][Journey to the Center of the Earth]]  (and thanks, Java, I hate it).
+
+* One last thing: Compiling
+  :LOGBOOK:
+  CLOCK: [2022-05-15 Sun 08:25]--[2022-05-15 Sun 08:39] =>  0:14
+  :END:
+
+One of the other major requirements for me is having a fully-compiled single front-end program that I can port to other architectures and operating systems.
+
+A quick search showed me some awesome looking [[https://go.dev/doc/tutorial/compile-install][official (?) Golang docs]] that point out how to get a binary: =`go build`=!
+
+It prints nothing, but on an =`ls`=, I have a nice shiny =`my-first-go-cli`= executable staring back at me from the terminal. Hello, friend!
+
+#+BEGIN_SRC
+$ ./my-first-go-cli
+A longer description that spans multiple lines and likely contains
+examples and usage of using your application. For example:
+
+Cobra is a CLI library for Go that empowers applications.
+This application is a tool to generate the needed files
+to quickly create a Cobra application.
+
+Usage:
+  my-first-go-cli [command]
+
+Available Commands:
+  completion  Generate the autocompletion script for the specified shell
+  help        Help about any command
+  newCommand  A brief description of your command
+
+Flags:
+  -h, --help     help for my-first-go-cli
+  -t, --toggle   Help message for toggle
+
+Use "my-first-go-cli [command] --help" for more information about a command.
+#+END_SRC
+
+We are in business!
+
+** But what about cross-compiling?
+
+Let's hit the search again -- =`golang cross compile`=. Yeah, [[https://golangcookbook.com/chapters/running/cross-compiling/][LGTM]] (looks good to me). Darwin is what Mac is called, for reasons I've been too lazy to look up.
+For the most part the story is going to be "because it is based off of something else named Darwin" and you'll never get to the bottom of what a "Darwin" truly is, so I sometimes fail to concern myself with these histories.
+
+#+BEGIN_SRC
+$ GOOS=darwin  go build
+$ ls
+cmd  go.mod  go.sum  LICENSE  main.go  my-first-go-cli
+$ ./my-first-go-cli
+bash: ./my-first-go-cli: cannot execute binary file: Exec format error
+#+END_SRC
+
+Perfect. I don't have a test machine right now, but I assume that it did the right thing, as I expected exactly that kind of error if I'm on the wrong OS.
+
+** ARM, though?
+
+Another quick search, =`go cross compile arm darwin`=, and [[https://sodocumentation.net/go/topic/1020/cross-compilation][bam]]! Magic table, pretty much what I expected -- either =`arm`= or =`arm64`= in another variable.
+
+#+BEGIN_SRC
+$ GOOS=darwin GOARCH=arm64 go build
+$ ./my-first-go-cli 
+bash: ./my-first-go-cli: cannot execute binary file: Exec format error
+#+END_SRC
+
+This has been utterly painless.
+Throw that in a [[https://github.com/features/actions][GitHub Action]] and call it a day. Easy!
+
+* Fin
+I'd say it's about time to actually start cracking into what this CLI is going to do! That's a much less topic to blog about, so I'll end things here.
+Next, I'll probably need to actually learn Go. [[https://exercism.org/tracks/go][Exercism]] is pretty great for picking up languages quickly, so I'll be doing that.
+
+I might blog more about Cobra if there's more interesting bits, but, for now: know of any other great Golang CLI library options I missed in my greedy search algorithm?
