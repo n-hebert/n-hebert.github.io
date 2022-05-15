@@ -341,7 +341,7 @@ Perfect. I don't have a test machine right now, but I assume that it did the rig
 
 ** ARM, though?
 
-Another quick search, =`go cross compile arm darwin`=, and [[https://sodocumentation.net/go/topic/1020/cross-compilation][bam]]! Magic table, pretty much what I expected -- either =`arm`= or =`arm64`= in another variable.
+Another quick search, =`go cross compile arm darwin`=, and [[https://sodocumentation.net/go/topic/1020/cross-compilation][bam]]! Magic table, pretty much what I expected: either =`arm`= or =`arm64`= in another variable. Turns out it's just the latter.
 
 #+BEGIN_SRC
 $ GOOS=darwin GOARCH=arm64 go build
