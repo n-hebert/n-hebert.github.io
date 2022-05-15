@@ -1,0 +1,75 @@
+#+TITLE: Installing the latest Manjaro dev on the PinePhone (for dummies)
+#+STARTUP: showall
+#+OPTIONS: toc:nil
+#+BEGIN_EXPORT html
+---
+layout: post
+title: Installing the latest Manjaro dev on the PinePhone (for dummies)
+tags: [pinephone, manjar, installing, tutorial]
+---
+<link rel="stylesheet" type="text/css" href="/assets/main.css" />
+<link rel="stylesheet" type="text/css" href="/_orgcss/site.css" />
+#+END_EXPORT
+#+TOC: headlines 2
+* About
+I don't think of you nor myself as a dummy, but sometimes it's just been *too* long and you really wish you had a *small* post to knock the rust off of an old workflow.
+** "Wait -- Manjaro? PinePhone?" - Prerequisites.
+
+I won't be discussing what a Linux distro is, or Manjaro itself, nor bikeshedding on what distro you should put on your [[https://www.pine64.org/pinephone/][PinePhone]].
+ 
+This blog'll be a bit higher-speed than usual.
+
+* [[https://manjaro.org/][Manjaro]]
+** Where does the PinePhone Manjaro live?
+   
+It's really hard to tell what's the official, but coming from [[https://www.pine64.org/2020/08/31/pinephone-manjaro-community-edition/][the PinePhone Manjaro Edition blog post]], I would say that it lives here:
+
+ * https://osdn.net/projects/manjaro-arm/storage/pinephone/
+   
+Odd link. Who dat?
+
+Anyway, that repo is *tragically* out of date in the cyber-future of 2022.
+Let me show you where it really lives: [[https://github.com/manjaro-pinephone/][here]], for example [[https://github.com/manjaro-pinephone/plasma-mobile-dev][here]], and for right now [[https://github.com/manjaro-pinephone/plasma-mobile-dev/releases/][literally right here]].
+
+Line noise to read, but CTRL+F for =-pinephone-= or =-pinephonepro-= depending on your case and grab the one ending in =`xz`=.
+
+Grab the =`.sha1`= only if you're feeling (=`sha1sum -c blablah.sha1`=) fancy, and the =pkgs.txt= is just for human eyeballs and interest, it seems. Skip.
+* How do I make it go?
+
+To be slow and boring, read the [[https://wiki.pine64.org/index.php/PinePhone_Installation_Instructions#Installation_to_the_eMMC][wiki]].
+
+For fast action:
+
+1. Stick a micro SD card in to your laptop where you have the =.xz= (bigger is better, faster is best)
+2. Check `fdisk -l | grep '^Disk \/'` for your microSD card
+3. Prepare for imminent destruction of all data on the disk
+4. =`xzcat Manjaro-ARM-plasma-mobile-dev-pinephone-20220515.img.xz | sudo dd of=/dev/YOUR_SDCARD_PLZ bs=1M`=
+
+If it's a =gzip=, you can swap for =`zcat`=, but these are usually =xz= for Manjaro.
+
+That's about it.
+
+* Sync & Eject
+
+Let's be extra nice to the brand new formatted card.
+
+#+BEGIN_SRC
+$ sudo sync
+$ sudo eject /dev/YOUR_SDCARD_PLZ
+#+END_SRC
+
+The sync may take a while and -- heck, I believe it's fully redundant to the call to eject, but isn't it nice to be extra safe?
+
+* Plug it in
+
+Pop that back cover (be careful of the screen) and slip out the battery.
+In goes the new SD Card.
+
+Cover back on -- oh, what am I saying! You know what to do: POWER ON!
+
+The first device selected is the SD Card so there's no more steps.
+My device showed the logo within about 15s of power on, then took quite about 5+ minutes to set up the whole shenanigan.
+
+The user experience needs a bit of work there, as the spinning logo *did* freeze up and it went to a black-screen for about 2m before finally being ready.
+
+Enjoy!
