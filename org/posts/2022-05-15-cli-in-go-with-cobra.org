@@ -353,7 +353,7 @@ This has been utterly painless.
 Throw that in a [[https://github.com/features/actions][GitHub Action]] and call it a day. Easy!
 
 * Fin
-I'd say it's about time to actually start cracking into what this CLI is going to do! That's a much less topic to blog about, so I'll end things here.
+I'd say it's about time to actually start cracking into what this CLI is going to do! That's a much less worthy topic to blog about, so I'll end things here.
 Next, I'll probably need to actually learn Go. [[https://exercism.org/tracks/go][Exercism]] is pretty great for picking up languages quickly, so I'll be doing that.
 
 I might blog more about Cobra if there's more interesting bits, but, for now: know of any other great Golang CLI library options I missed in my greedy search algorithm?
