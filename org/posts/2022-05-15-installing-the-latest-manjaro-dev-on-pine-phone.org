@@ -58,7 +58,7 @@ $ sudo sync
 $ sudo eject /dev/YOUR_SDCARD_PLZ
 #+END_SRC
 
-The sync may take a while and -- heck, I believe it's fully redundant to the call to eject, but isn't it nice to be extra safe?
+The sync may take a while and -- heck -- I believe it's fully redundant to the call to eject, but isn't it nice to be extra safe?
 
 * Plug it in
 
