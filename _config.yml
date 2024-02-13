@@ -27,12 +27,14 @@ url: "" # the base hostname & protocol for your site, e.g. http://example.com
 #twitter_username: jekyllrb
 github_username:  n-hebert
 
-# Build settings
-theme: minima
 plugins:
   - jekyll-feed
 
-include: ["_orgcss"]
+theme: minima
+
+include:
+    - _orgcss/
+    - _sass/
 
 # Exclude from processing.
 # The following items will not be processed, by default.
@@ -43,9 +45,11 @@ include: ["_orgcss"]
 # their entries' file path in the `include:` list.
 #
 exclude:
-   - "README.md"
-   - "Makefile"
-   - ".ruby-version"
+    - .ruby-version
+    - about.md
+    - Makefile
+    - org
+    - README.md
 
 # exclude:
 #   - .sass-cache/
