@@ -16,8 +16,8 @@ gem "jekyll", "~> 4.3"
 # https://github.com/jekyll/jekyll/issues/8523
 gem "webrick"
 
-# Permit remote themes
-gem "jekyll-remote-theme"
+# This is the default theme for new Jekyll sites. You may change this to anything you like.
+gem "minima", "~> 2.5"
 
 # If you want to use GitHub Pages, remove the "gem "jekyll"" above and
 # uncomment the line below. To upgrade, run `bundle update github-pages`.
