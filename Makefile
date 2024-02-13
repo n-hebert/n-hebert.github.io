@@ -1,9 +1,7 @@
-#!?usr/bin/env bash
-
 .PHONY: bundle
 bundle:
 	bundle
- 
+
 .PHONY: serve
 serve: bundle
 	bundle exec jekyll serve --detach --quiet
