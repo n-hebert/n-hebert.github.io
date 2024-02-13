@@ -10,9 +10,11 @@ git_source(:github) {|repo_name| "https://github.com/#{repo_name}" }
 #
 # This will help ensure the proper Jekyll version is running.
 # Happy Jekylling!
-gem "jekyll", "~> 4.2.2"
+gem "jekyll", "~> 4.3"
 
-gem "webrick" # needed for some ruby 3 environments
+# needed for some ruby 3 environments
+# https://github.com/jekyll/jekyll/issues/8523
+gem "webrick"
 
 # Permit remote themes
 gem "jekyll-remote-theme"

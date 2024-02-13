@@ -28,9 +28,11 @@ url: "" # the base hostname & protocol for your site, e.g. http://example.com
 github_username:  n-hebert
 
 # Build settings
-theme_repository: "https://github.com/n-hebert/jekyll-gruvbox-theme"
 plugins:
   - jekyll-feed
+  - jekyll-remote-theme
+
+remote_theme: "https://github.com/n-hebert/jekyll-gruvbox-theme"
 
 include: ["_orgcss"]
 
@@ -42,6 +44,11 @@ include: ["_orgcss"]
 # Excluded items can be processed by explicitly listing the directories or
 # their entries' file path in the `include:` list.
 #
+exclude:
+   - "README.md"
+   - "Makefile"
+   - ".ruby-version"
+
 # exclude:
 #   - .sass-cache/
 #   - .jekyll-cache/

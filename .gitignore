@@ -11,3 +11,6 @@ vendor
 
 # Orgmode generated
 _orgcss
+
+# Bundle files
+.bundle/
