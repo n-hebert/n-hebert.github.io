@@ -1,13 +1,15 @@
-#+TITLE: @Put your title here@
+#+TITLE: %^{Full Title}
 #+STARTUP: showall
 #+OPTIONS: toc:nil
 #+BEGIN_EXPORT html
 ---
 layout: post
-title: @Put your title here@
-tags: [tags, go, here]
+title: %\1
+tags: [%^{Tags CSV}]
 ---
 <link rel="stylesheet" type="text/css" href="/assets/main.css" />
 <link rel="stylesheet" type="text/css" href="/_orgcss/site.css" />
 #+END_EXPORT
 #+TOC: headlines 2
+
+* %?

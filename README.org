@@ -1,0 +1,30 @@
+* My technical blog
+
+View it here: https://n-hebert.github.io/
+
+I'm using OrgMode to write these and publish them to the Jekyll posts folder.
+
+** Capturing a new blog
+Define the following in your ELISP environment and bind or call `my/create-new-blog`.
+You will be requested to provide a short title for the filename, a full title for public visiblity, and then the tags.
+You can then write the blog.
+
+#+begin_src elisp
+  (defun my/determine-blog-org-capture-filename ()
+    (let*
+        ((my-org-note--name (replace-regexp-in-string " +" "-" (read-string "File-name (short title): ")))
+         (my-org-note--time (format-time-string "%Y%m%d%H%M%S"))
+         (file-name (format "%s/%s-%s.org" "~/eph/dev/local/n-hebert.github.io/org/posts" my-org-note--time my-org-note--name)))
+      ;; I don't like how this opens a second window, it find-files away from where I am and then the capture opens a new window.
+      (set-buffer (org-capture-target-buffer file-name))
+      (goto-char (point-max))))
+
+  (defun my/create-new-blog ()
+    (interactive)
+    (let ((org-capture-templates
+           '(("b" "Blog (Professional)" plain
+              (function my/determine-blog-org-capture-filename)
+              (file "~/eph/dev/local/n-hebert.github.io/org/template.org")
+              :unnarrowed t))))
+      (org-capture nil "b")))
+#+end_src
