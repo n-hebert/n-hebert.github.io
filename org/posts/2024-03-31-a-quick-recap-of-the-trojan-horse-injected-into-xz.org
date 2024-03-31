@@ -27,7 +27,7 @@ In brief, malware (a "backdoor", a "trojan horse") was injected into the /pre-bu
 By being injected into the pre-built "tar-balls", this means that it was able to go undetected by the usual means of "looking at the source code", a phrase which swiftly restates nearly the entire premise of "open-source software".
 [[https://en.wikipedia.org/wiki/Obfuscation_(software)][Obfuscation]] [[https://www.geeksforgeeks.org/what-is-obfuscation/][techniques]], including some automatically-detectable "lintable" issues, went unnoticed to permit this injection to happen -- which can make one feel both worse /and/ better at the same time.
 
-Major Linux distributions including [[https://www.redhat.com/en/blog/urgent-security-alert-fedora-41-and-rawhide-users][Fedora]], [[https://github.com/NixOS/nixpkgs/issues/300055#issuecomment-2028518618][Nix(& NixOS)]], [[https://unit42.paloaltonetworks.com/threat-brief-xz-utils-cve-2024-3094/#post-133225-_zg1rezlvhwuy][among others]].
+Major Linux distributions including [[https://www.redhat.com/en/blog/urgent-security-alert-fedora-41-and-rawhide-users][Fedora]], [[https://github.com/NixOS/nixpkgs/issues/300055#issuecomment-2028518618][Nix(& NixOS)]], [[https://unit42.paloaltonetworks.com/threat-brief-xz-utils-cve-2024-3094/#post-133225-_zg1rezlvhwuy][among others]] were impacted and SSH servers were rendered vulnerable, causing some valid level of panic.
 
 ** How bad was it?
 
