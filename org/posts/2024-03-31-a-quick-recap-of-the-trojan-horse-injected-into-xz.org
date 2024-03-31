@@ -1,0 +1,93 @@
+#+TITLE: A quick recap of the trojan horse injected into xz
+#+STARTUP: showall
+#+OPTIONS: toc:nil
+#+BEGIN_EXPORT html
+---
+layout: post
+title: A quick recap of the trojan horse injected into xz
+tags: [xz,trojan,malware,recap]
+---
+<link rel="stylesheet" type="text/css" href="/assets/main.css" />
+<link rel="stylesheet" type="text/css" href="/_orgcss/site.css" />
+#+END_EXPORT
+#+TOC: headlines 2
+
+* About the article you're reading now
+
+(In advance, no this isn't an off-by-one April Fool's or anything; I don't observe such a day.)
+
+Doubtlessly, there will be many [[https://boehs.org/node/everything-i-know-about-the-xz-backdoor][better]] [[https://www.redhat.com/en/blog/urgent-security-alert-fedora-41-and-rawhide-users][sources]] of [[https://arstechnica.com/security/2024/03/backdoor-found-in-widely-used-linux-utility-breaks-encrypted-ssh-connections/][news]] of news about the xz/liblzma [[https://seclists.org/oss-sec/2024/q1/268][finding]] from this weekend, however I thought to give my insight to those who might value my particular distillation.
+
+* What happened?
+
+** The "what"
+I want to keep this section unerringly short, because there's so much better place to find [[https://nvd.nist.gov/vuln/detail/CVE-2024-3094][raw]] [[https://infosec.exchange/@fr0gger/112189232773640259][detail]].
+
+In brief, malware (a "backdoor", a "trojan horse") was injected into the /pre-built/ version of `xz`, a highly-popular and broadly-available [[https://en.wikipedia.org/wiki/Data_compression][data compression]] program. If you're familiar with the concept of [[https://en.wikipedia.org/wiki/ZIP_(file_format)][`.zip` files]], this is the same concept.
+By being injected into the pre-built "tar-balls", this means that it was able to go undetected by the usual means of "looking at the source code", a phrase which swiftly restates nearly the entire premise of "open-source software".
+Somehow worse /and/ better, there were obfuscation techniques and other automatically detectable issues that went unnoticed to permit this injection to happen.
+
+Major Linux distributions including [[https://www.redhat.com/en/blog/urgent-security-alert-fedora-41-and-rawhide-users][Fedora]], [[https://github.com/NixOS/nixpkgs/issues/300055#issuecomment-2028518618][Nix(& NixOS)]], [[https://unit42.paloaltonetworks.com/threat-brief-xz-utils-cve-2024-3094/#post-133225-_zg1rezlvhwuy][among others]].
+
+** How bad was it?
+
+It was rated a 10/10 in criticality. Those are uncommon, not good, and require immediate action. It is expected that servers have already been breached, and we will learn what we lost as we go (or we will not).
+
+** When did it happen?
+
+The fallout became public likely with Andres Freund's mail on Fri, 29 Mar 2024 at 08:51:26 -0700. See [[https://www.openwall.com/lists/oss-security/2024/03/29/4][Andres' mail]]. However the malware itself has been about since at latest [[https://lists.debian.org/debian-security-announce/2024/msg00057.html][Feburary 1st]] in Debian's non-Stable regions and [[https://archlinux.org/news/the-xz-package-has-been-backdoored/][February 24th]] for Arch Linux's containers.
+
+** Is this a [[https://en.wikipedia.org/wiki/Zero-day_(computing)][0-day]]?
+
+[[https://www.cloudflare.com/learning/security/threats/zero-day-exploit/][Yes]]. Not only are there zero days to fix it before it is in the wild, as with most "zero" days there will be attackers who already knew about it long ago. Thus, it's more of a "a negative number of days have been provided to you to patch; please time travel if necessary" kind of zero-day, as per the usual.
+
+** Who?
+
+This is the least important question, but it seems to be the person who took ownership of the repository, or someone who was able to gain access to their account.
+We can combat the interest the "who?" by focusing on solutions and preventions for next time, instead.
+
+* What are some solutions?
+
+In order of how important they are to do.
+
+** Update!
+
+If you're still reading and you have any control over any servers; stop and go update them. That's the most important thing to do; act now.
+
+What's more tricky is where you may need to wait for images to update for any docker or Kubernetes services that you run, so consider carefully your threat model and what is open to the internet.
+Your security best practices to-date and existing permission boundaries will be all that is saving you if you cannot lock down affected services.
+
+** Fund open source
+
+This one is a no-brainer. Loosely paraphrasing [[https://fosstodon.org/@AKernelPanic/112182227923027744][Aaron Prisk]]: we need to stop funding JunkCoin™️, NFT's, and AI so deeply that we forget that the software we have is the most valuable software to us.
+
+Unfortunately, funding sources are so fascinated by the latest trash-heap idea like "drones, but for your dog", and need to spend more money on increasing our fundamental and foundational reliabilities in software.
+It's going to become one of those [[https://www.youtube.com/watch?v=RYidbrCbK7Q&t=100s][don't make me tap the sign]] sorts of things, as we have already seen this as a real problem, but I suppose I'll keep tapping the sign.
+
+If it isn't totally clear: this happened because the project received none of the value it merited in terms of time, energy, money, respect -- anything -- and we can fix that by at least funding it and others critical like it.
+
+** Treat community rudeness and low EQ as an actual security threat, based in social engineering
+
+People may [[https://fosstodon.org/@carol@crabby.fyi/112186675147305199][joke]] (and that may not be a joke), but more harshly scrutinizing lack of empathy or politeness from users should definitely be one key take-away. When maintainers are bullied into handing over control of the code, bad actors can sit arbitrary lengths of time before springing their trap and even more frightening lengths of time before being caught.
+
+This went unnoticed, because [[https://fosstodon.org/@swelljoe@mas.to/112186147777619530][we are /far/ too tolerant of abuse in open-source]].
+
+This one is going to be tricky, and I don't envy that we are moving into a less "fun" open-source world, but this is the norm for the party to end someday and for places like "the wild west" to mellow out into, well, just "the west".
+
+** Lint better
+
+There is now lots of evidence that [[https://gynvael.coldwind.pl/?lang=en&id=782][sophisticated]] [[https://en.wikipedia.org/wiki/Obfuscation_(software)][obfuscation]] [[https://www.geeksforgeeks.org/what-is-obfuscation/][techniques]] [[https://linuxiac.com/the-upstream-xz-tarballs-have-been-backdoored/][were used]] to achieve this, so it goes without saying that better attention to where linters and other [[https://owasp.org/www-community/controls/Static_Code_Analysis][static code analysis]] tools are struggling is of high importance. [[https://en.wikipedia.org/wiki/Valgrind][Valgrind]] is such a tool, and that's what tipped off Andres, the reporter, to the problem.
+
+This will require that linters and static-analysis tools are run more readily on both sides of the equation. We need better linting by distributions shipping software, and we need to encourage downloaders to scan before using, too.
+
+Gone may be the hey-days of [[https://en.wikipedia.org/wiki/Norton_AntiVirus][Norton AntiVirus]] or [[https://en.wikipedia.org/wiki/McAfee][McAfee]] being a household name, but we need to at some point wake up that computers can help us protect ourselves from other computers (and the more-nefarious humans running them).
+
+** Consider disusing tar-balls
+
+This one will be controversial and possibly seen as "Tin-foil hat" talk, but let's be serious: why are tar-balls so prevalent to this day?
+
+Storage is cheap, network speeds are great, and [[https://github.blog/2020-12-21-get-up-to-speed-with-partial-clone-and-shallow-clone/][shallow clones]] exist. Significant attestation can be done more cheaply on a repo commit by git alone to speak nothing of simply gpg signing a commit hash. Why do we let arbitrary blobs rule all of our binary *and* source distributions?
+I don't think this is a git-only question by any means, either, but I have yet to deep-dive the shallow-clone capability of all VCS's.
+
+I'm currently in process of figuring out some tools and pages that might help us move away from tarballs, but we are absolutely addicted to them, so it won't be published in the near future.
+

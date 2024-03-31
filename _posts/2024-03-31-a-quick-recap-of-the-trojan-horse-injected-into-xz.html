@@ -1,0 +1,200 @@
+---
+layout: post
+title: A quick recap of the trojan horse injected into xz
+tags: [xz,trojan,malware,recap]
+---
+<link rel="stylesheet" type="text/css" href="/assets/main.css" />
+<link rel="stylesheet" type="text/css" href="/_orgcss/site.css" />
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#org06f99f4">About the article you're reading now</a></li>
+<li><a href="#org3a92dad">What happened?</a>
+<ul>
+<li><a href="#org1023d33">The "what"</a></li>
+<li><a href="#org3c0726f">How bad was it?</a></li>
+<li><a href="#org4630efb">When did it happen?</a></li>
+<li><a href="#org988f10b">Is this a 0-day?</a></li>
+<li><a href="#org3d0139a">Who?</a></li>
+</ul>
+</li>
+<li><a href="#orgcf13503">What are some solutions?</a>
+<ul>
+<li><a href="#org0d6c1e6">Update!</a></li>
+<li><a href="#orgb5eda9c">Fund open source</a></li>
+<li><a href="#org64bfc45">Treat community rudeness and low EQ as an actual security threat, based in social engineering</a></li>
+<li><a href="#orgdc9c658">Lint better</a></li>
+<li><a href="#org3bcb6d8">Consider disusing tar-balls</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org06f99f4" class="outline-2">
+<h2 id="org06f99f4">About the article you're reading now</h2>
+<div class="outline-text-2" id="text-org06f99f4">
+<p>
+(In advance, no this isn't an off-by-one April Fool's or anything; I don't observe such a day.)
+</p>
+
+<p>
+Doubtlessly, there will be many <a href="https://boehs.org/node/everything-i-know-about-the-xz-backdoor">better</a> <a href="https://www.redhat.com/en/blog/urgent-security-alert-fedora-41-and-rawhide-users">sources</a> of <a href="https://arstechnica.com/security/2024/03/backdoor-found-in-widely-used-linux-utility-breaks-encrypted-ssh-connections/">news</a> of news about the xz/liblzma <a href="https://seclists.org/oss-sec/2024/q1/268">finding</a> from this weekend, however I thought to give my insight to those who might value my particular distillation.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org3a92dad" class="outline-2">
+<h2 id="org3a92dad">What happened?</h2>
+<div class="outline-text-2" id="text-org3a92dad">
+</div>
+<div id="outline-container-org1023d33" class="outline-3">
+<h3 id="org1023d33">The "what"</h3>
+<div class="outline-text-3" id="text-org1023d33">
+<p>
+I want to keep this section unerringly short, because there's so much better place to find <a href="https://nvd.nist.gov/vuln/detail/CVE-2024-3094">raw</a> <a href="https://infosec.exchange/@fr0gger/112189232773640259">detail</a>.
+</p>
+
+<p>
+In brief, malware (a "backdoor", a "trojan horse") was injected into the <i>pre-built</i> version of `xz`, a highly-popular and broadly-available <a href="https://en.wikipedia.org/wiki/Data_compression">data compression</a> program. If you're familiar with the concept of <a href="https://en.wikipedia.org/wiki/ZIP_(file_format)">`.zip` files</a>, this is the same concept.
+By being injected into the pre-built "tar-balls", this means that it was able to go undetected by the usual means of "looking at the source code", a phrase which swiftly restates nearly the entire premise of "open-source software".
+Somehow worse <i>and</i> better, there were obfuscation techniques and other automatically detectable issues that went unnoticed to permit this injection to happen.
+</p>
+
+<p>
+Major Linux distributions including <a href="https://www.redhat.com/en/blog/urgent-security-alert-fedora-41-and-rawhide-users">Fedora</a>, <a href="https://github.com/NixOS/nixpkgs/issues/300055#issuecomment-2028518618">Nix(&amp; NixOS)</a>, <a href="https://unit42.paloaltonetworks.com/threat-brief-xz-utils-cve-2024-3094/#post-133225-_zg1rezlvhwuy">among others</a>.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org3c0726f" class="outline-3">
+<h3 id="org3c0726f">How bad was it?</h3>
+<div class="outline-text-3" id="text-org3c0726f">
+<p>
+It was rated a 10/10 in criticality. Those are uncommon, not good, and require immediate action. It is expected that servers have already been breached, and we will learn what we lost as we go (or we will not).
+</p>
+</div>
+</div>
+
+<div id="outline-container-org4630efb" class="outline-3">
+<h3 id="org4630efb">When did it happen?</h3>
+<div class="outline-text-3" id="text-org4630efb">
+<p>
+The fallout became public likely with Andres Freund's mail on Fri, 29 Mar 2024 at 08:51:26 -0700. See <a href="https://www.openwall.com/lists/oss-security/2024/03/29/4">Andres' mail</a>. However the malware itself has been about since at latest <a href="https://lists.debian.org/debian-security-announce/2024/msg00057.html">Feburary 1st</a> in Debian's non-Stable regions and <a href="https://archlinux.org/news/the-xz-package-has-been-backdoored/">February 24th</a> for Arch Linux's containers.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org988f10b" class="outline-3">
+<h3 id="org988f10b">Is this a <a href="https://en.wikipedia.org/wiki/Zero-day_(computing)">0-day</a>?</h3>
+<div class="outline-text-3" id="text-org988f10b">
+<p>
+<a href="https://www.cloudflare.com/learning/security/threats/zero-day-exploit/">Yes</a>. Not only are there zero days to fix it before it is in the wild, as with most "zero" days there will be attackers who already knew about it long ago. Thus, it's more of a "a negative number of days have been provided to you to patch; please time travel if necessary" kind of zero-day, as per the usual.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org3d0139a" class="outline-3">
+<h3 id="org3d0139a">Who?</h3>
+<div class="outline-text-3" id="text-org3d0139a">
+<p>
+This is the least important question, but it seems to be the person who took ownership of the repository, or someone who was able to gain access to their account.
+We can combat the interest the "who?" by focusing on solutions and preventions for next time, instead.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgcf13503" class="outline-2">
+<h2 id="orgcf13503">What are some solutions?</h2>
+<div class="outline-text-2" id="text-orgcf13503">
+<p>
+In order of how important they are to do.
+</p>
+</div>
+
+<div id="outline-container-org0d6c1e6" class="outline-3">
+<h3 id="org0d6c1e6">Update!</h3>
+<div class="outline-text-3" id="text-org0d6c1e6">
+<p>
+If you're still reading and you have any control over any servers; stop and go update them. That's the most important thing to do; act now.
+</p>
+
+<p>
+What's more tricky is where you may need to wait for images to update for any docker or Kubernetes services that you run, so consider carefully your threat model and what is open to the internet.
+Your security best practices to-date and existing permission boundaries will be all that is saving you if you cannot lock down affected services.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgb5eda9c" class="outline-3">
+<h3 id="orgb5eda9c">Fund open source</h3>
+<div class="outline-text-3" id="text-orgb5eda9c">
+<p>
+This one is a no-brainer. Loosely paraphrasing <a href="https://fosstodon.org/@AKernelPanic/112182227923027744">Aaron Prisk</a>: we need to stop funding JunkCoin™️, NFT's, and AI so deeply that we forget that the software we have is the most valuable software to us.
+</p>
+
+<p>
+Unfortunately, funding sources are so fascinated by the latest trash-heap idea like "drones, but for your dog", and need to spend more money on increasing our fundamental and foundational reliabilities in software.
+It's going to become one of those <a href="https://www.youtube.com/watch?v=RYidbrCbK7Q&amp;t=100s">don't make me tap the sign</a> sorts of things, as we have already seen this as a real problem, but I suppose I'll keep tapping the sign.
+</p>
+
+<p>
+If it isn't totally clear: this happened because the project received none of the value it merited in terms of time, energy, money, respect &#x2013; anything &#x2013; and we can fix that by at least funding it and others critical like it.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org64bfc45" class="outline-3">
+<h3 id="org64bfc45">Treat community rudeness and low EQ as an actual security threat, based in social engineering</h3>
+<div class="outline-text-3" id="text-org64bfc45">
+<p>
+People may <a href="https://fosstodon.org/@carol@crabby.fyi/112186675147305199">joke</a> (and that may not be a joke), but more harshly scrutinizing lack of empathy or politeness from users should definitely be one key take-away. When maintainers are bullied into handing over control of the code, bad actors can sit arbitrary lengths of time before springing their trap and even more frightening lengths of time before being caught.
+</p>
+
+<p>
+This went unnoticed, because <a href="https://fosstodon.org/@swelljoe@mas.to/112186147777619530">we are <i>far</i> too tolerant of abuse in open-source</a>.
+</p>
+
+<p>
+This one is going to be tricky, and I don't envy that we are moving into a less "fun" open-source world, but this is the norm for the party to end someday and for places like "the wild west" to mellow out into, well, just "the west".
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgdc9c658" class="outline-3">
+<h3 id="orgdc9c658">Lint better</h3>
+<div class="outline-text-3" id="text-orgdc9c658">
+<p>
+There is now lots of evidence that <a href="https://gynvael.coldwind.pl/?lang=en&amp;id=782">sophisticated</a> <a href="https://en.wikipedia.org/wiki/Obfuscation_(software)">obfuscation</a> <a href="https://www.geeksforgeeks.org/what-is-obfuscation/">techniques</a> <a href="https://linuxiac.com/the-upstream-xz-tarballs-have-been-backdoored/">were used</a> to achieve this, so it goes without saying that better attention to where linters and other <a href="https://owasp.org/www-community/controls/Static_Code_Analysis">static code analysis</a> tools are struggling is of high importance. <a href="https://en.wikipedia.org/wiki/Valgrind">Valgrind</a> is such a tool, and that's what tipped off Andres, the reporter, to the problem.
+</p>
+
+<p>
+This will require that linters and static-analysis tools are run more readily on both sides of the equation. We need better linting by distributions shipping software, and we need to encourage downloaders to scan before using, too.
+</p>
+
+<p>
+Gone may be the hey-days of <a href="https://en.wikipedia.org/wiki/Norton_AntiVirus">Norton AntiVirus</a> or <a href="https://en.wikipedia.org/wiki/McAfee">McAfee</a> being a household name, but we need to at some point wake up that computers can help us protect ourselves from other computers (and the more-nefarious humans running them).
+</p>
+</div>
+</div>
+
+<div id="outline-container-org3bcb6d8" class="outline-3">
+<h3 id="org3bcb6d8">Consider disusing tar-balls</h3>
+<div class="outline-text-3" id="text-org3bcb6d8">
+<p>
+This one will be controversial and possibly seen as "Tin-foil hat" talk, but let's be serious: why are tar-balls so prevalent to this day?
+</p>
+
+<p>
+Storage is cheap, network speeds are great, and <a href="https://github.blog/2020-12-21-get-up-to-speed-with-partial-clone-and-shallow-clone/">shallow clones</a> exist. Significant attestation can be done more cheaply on a repo commit by git alone to speak nothing of simply gpg signing a commit hash. Why do we let arbitrary blobs rule all of our binary <b>and</b> source distributions?
+I don't think this is a git-only question by any means, either, but I have yet to deep-dive the shallow-clone capability of all VCS's.
+</p>
+
+<p>
+I'm currently in process of figuring out some tools and pages that might help us move away from tarballs, but we are absolutely addicted to them, so it won't be published in the near future.
+</p>
+</div>
+</div>
+</div>

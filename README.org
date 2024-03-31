@@ -13,7 +13,7 @@ You can then write the blog.
   (defun my/determine-blog-org-capture-filename ()
     (let*
         ((my-org-note--name (replace-regexp-in-string " +" "-" (read-string "File-name (short title): ")))
-         (my-org-note--time (format-time-string "%Y%m%d%H%M%S"))
+         (my-org-note--time (format-time-string "%Y-%m-%d-%H-%M-%S"))
          (file-name (format "%s/%s-%s.org" "~/eph/dev/local/n-hebert.github.io/org/posts" my-org-note--time my-org-note--name)))
       ;; I don't like how this opens a second window, it find-files away from where I am and then the capture opens a new window.
       (set-buffer (org-capture-target-buffer file-name))
@@ -28,3 +28,9 @@ You can then write the blog.
               :unnarrowed t))))
       (org-capture nil "b")))
 #+end_src
+
+** Publishing a Post
+
+See org/publish.el in this repo for details.
+
+Do note that some trivial diffs currently pop up.
