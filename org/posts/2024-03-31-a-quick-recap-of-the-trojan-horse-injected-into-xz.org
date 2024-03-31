@@ -84,7 +84,7 @@ Gone may be the hey-days of [[https://en.wikipedia.org/wiki/Norton_AntiVirus][No
 
 ** Consider disusing tar-balls
 
-This one will be controversial and possibly seen as "Tin-foil hat" talk, but let's be serious: why are tar-balls so prevalent to this day?
+This one will be controversial and possibly seen as "tin-foil hat" talk, but let's be serious: why are [[https://computing.help.inf.ed.ac.uk/FAQ/whats-tarball-or-how-do-i-unpack-or-create-tgz-or-targz-file][tar-balls]] so prevalent to this day when we can so easily ship the actual source code? I see tar-balls as a deadly hold-over from the CD-ROM and FTP days that we need to remedy.
 
 Storage is cheap, network speeds are great, and [[https://github.blog/2020-12-21-get-up-to-speed-with-partial-clone-and-shallow-clone/][shallow clones]] exist. Significant attestation can be done more cheaply on a repo commit by git alone to speak nothing of simply gpg signing a commit hash. Why do we let arbitrary blobs rule all of our binary *and* source distributions?
 I don't think this is a git-only question by any means, either, but I have yet to deep-dive the shallow-clone capability of all VCS's.
