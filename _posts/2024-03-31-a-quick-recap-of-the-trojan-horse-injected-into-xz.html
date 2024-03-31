@@ -59,7 +59,7 @@ I want to keep this section unerringly short, because there's so much better pla
 <p>
 In brief, malware (a "backdoor", a "trojan horse") was injected into the <i>pre-built</i> version of `xz`, a highly-popular and broadly-available <a href="https://en.wikipedia.org/wiki/Data_compression">data compression</a> program. If you're familiar with the concept of <a href="https://en.wikipedia.org/wiki/ZIP_(file_format)">`.zip` files</a>, this is the same concept.
 By being injected into the pre-built "tar-balls", this means that it was able to go undetected by the usual means of "looking at the source code", a phrase which swiftly restates nearly the entire premise of "open-source software".
-Obfuscation techniques and other automatically detectable issues that went unnoticed to permit this injection to happen, which can make one feel both worse <i>and</i> better at the same time.
+<a href="https://en.wikipedia.org/wiki/Obfuscation_(software)">Obfuscation</a> <a href="https://www.geeksforgeeks.org/what-is-obfuscation/">techniques</a>, including some automatically-detectable "lintable" issues, went unnoticed to permit this injection to happen &#x2013; which can make one feel both worse <i>and</i> better at the same time.
 </p>
 
 <p>
@@ -167,7 +167,7 @@ This one is going to be tricky, and I don't envy that we are moving into a less 
 <h3 id="orgb7d1ba7">Lint more frequently and more aggressively</h3>
 <div class="outline-text-3" id="text-orgb7d1ba7">
 <p>
-There is now lots of evidence that <a href="https://gynvael.coldwind.pl/?lang=en&amp;id=782">sophisticated</a> <a href="https://en.wikipedia.org/wiki/Obfuscation_(software)">obfuscation</a> <a href="https://www.geeksforgeeks.org/what-is-obfuscation/">techniques</a> <a href="https://linuxiac.com/the-upstream-xz-tarballs-have-been-backdoored/">were used</a> to achieve this, so it goes without saying that better attention to where linters and other <a href="https://owasp.org/www-community/controls/Static_Code_Analysis">static code analysis</a> tools are struggling is of high importance. <a href="https://en.wikipedia.org/wiki/Valgrind">Valgrind</a> is such a tool, and that's what tipped off Andres, the reporter, to the problem.
+There is now significant evidence that <a href="https://gynvael.coldwind.pl/?lang=en&amp;id=782">sophisticated</a> <a href="https://linuxiac.com/the-upstream-xz-tarballs-have-been-backdoored/">obfuscation techniques</a> were used to achieve <a href="https://git.tukaani.org/?p=xz.git;a=commitdiff;h=328c52da8a2bbb81307644efdb58db2c422d9ba7">this</a>, so it goes without saying that better attention to where linters and other <a href="https://owasp.org/www-community/controls/Static_Code_Analysis">static code analysis</a> tools are struggling is of high importance. <a href="https://en.wikipedia.org/wiki/Valgrind">Valgrind</a> is such a tool, and that's what tipped off Andres, the reporter, to the problem.
 </p>
 
 <p>

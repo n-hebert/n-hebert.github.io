@@ -25,7 +25,7 @@ I want to keep this section unerringly short, because there's so much better pla
 
 In brief, malware (a "backdoor", a "trojan horse") was injected into the /pre-built/ version of `xz`, a highly-popular and broadly-available [[https://en.wikipedia.org/wiki/Data_compression][data compression]] program. If you're familiar with the concept of [[https://en.wikipedia.org/wiki/ZIP_(file_format)][`.zip` files]], this is the same concept.
 By being injected into the pre-built "tar-balls", this means that it was able to go undetected by the usual means of "looking at the source code", a phrase which swiftly restates nearly the entire premise of "open-source software".
-Obfuscation techniques and other automatically detectable issues that went unnoticed to permit this injection to happen, which can make one feel both worse /and/ better at the same time.
+[[https://en.wikipedia.org/wiki/Obfuscation_(software)][Obfuscation]] [[https://www.geeksforgeeks.org/what-is-obfuscation/][techniques]], including some automatically-detectable "lintable" issues, went unnoticed to permit this injection to happen -- which can make one feel both worse /and/ better at the same time.
 
 Major Linux distributions including [[https://www.redhat.com/en/blog/urgent-security-alert-fedora-41-and-rawhide-users][Fedora]], [[https://github.com/NixOS/nixpkgs/issues/300055#issuecomment-2028518618][Nix(& NixOS)]], [[https://unit42.paloaltonetworks.com/threat-brief-xz-utils-cve-2024-3094/#post-133225-_zg1rezlvhwuy][among others]].
 
@@ -76,7 +76,7 @@ This one is going to be tricky, and I don't envy that we are moving into a less 
 
 ** Lint more frequently and more aggressively
 
-There is now lots of evidence that [[https://gynvael.coldwind.pl/?lang=en&id=782][sophisticated]] [[https://en.wikipedia.org/wiki/Obfuscation_(software)][obfuscation]] [[https://www.geeksforgeeks.org/what-is-obfuscation/][techniques]] [[https://linuxiac.com/the-upstream-xz-tarballs-have-been-backdoored/][were used]] to achieve this, so it goes without saying that better attention to where linters and other [[https://owasp.org/www-community/controls/Static_Code_Analysis][static code analysis]] tools are struggling is of high importance. [[https://en.wikipedia.org/wiki/Valgrind][Valgrind]] is such a tool, and that's what tipped off Andres, the reporter, to the problem.
+There is now significant evidence that [[https://gynvael.coldwind.pl/?lang=en&id=782][sophisticated]] [[https://linuxiac.com/the-upstream-xz-tarballs-have-been-backdoored/][obfuscation techniques]] were used to achieve [[https://git.tukaani.org/?p=xz.git;a=commitdiff;h=328c52da8a2bbb81307644efdb58db2c422d9ba7][this]], so it goes without saying that better attention to where linters and other [[https://owasp.org/www-community/controls/Static_Code_Analysis][static code analysis]] tools are struggling is of high importance. [[https://en.wikipedia.org/wiki/Valgrind][Valgrind]] is such a tool, and that's what tipped off Andres, the reporter, to the problem.
 
 This will require that linters and static-analysis tools are run more readily on both sides of the equation. We need better linting by distributions shipping software, and we need to encourage downloaders to scan before using, too.
 
