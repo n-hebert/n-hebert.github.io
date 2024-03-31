@@ -25,23 +25,23 @@ I want to keep this section unerringly short, because there's so much better pla
 
 In brief, malware (a "backdoor", a "trojan horse") was injected into the /pre-built/ version of `xz`, a highly-popular and broadly-available [[https://en.wikipedia.org/wiki/Data_compression][data compression]] program. If you're familiar with the concept of [[https://en.wikipedia.org/wiki/ZIP_(file_format)][`.zip` files]], this is the same concept.
 By being injected into the pre-built "tar-balls", this means that it was able to go undetected by the usual means of "looking at the source code", a phrase which swiftly restates nearly the entire premise of "open-source software".
-Somehow worse /and/ better, there were obfuscation techniques and other automatically detectable issues that went unnoticed to permit this injection to happen.
+Obfuscation techniques and other automatically detectable issues that went unnoticed to permit this injection to happen, which can make one feel both worse /and/ better at the same time.
 
 Major Linux distributions including [[https://www.redhat.com/en/blog/urgent-security-alert-fedora-41-and-rawhide-users][Fedora]], [[https://github.com/NixOS/nixpkgs/issues/300055#issuecomment-2028518618][Nix(& NixOS)]], [[https://unit42.paloaltonetworks.com/threat-brief-xz-utils-cve-2024-3094/#post-133225-_zg1rezlvhwuy][among others]].
 
 ** How bad was it?
 
-It was rated a 10/10 in criticality. Those are uncommon, not good, and require immediate action. It is expected that servers have already been breached, and we will learn what we lost as we go (or we will not).
+It was rated a [[https://nvd.nist.gov/vuln/detail/CVE-2024-3094][10/10]] in criticality. Those are uncommon, not good, and require immediate action. It is expected that servers have already been breached, and we will learn what we lost as we go (or we will not).
 
 ** When did it happen?
 
-The fallout became public likely with Andres Freund's mail on Fri, 29 Mar 2024 at 08:51:26 -0700. See [[https://www.openwall.com/lists/oss-security/2024/03/29/4][Andres' mail]]. However the malware itself has been about since at latest [[https://lists.debian.org/debian-security-announce/2024/msg00057.html][Feburary 1st]] in Debian's non-Stable regions and [[https://archlinux.org/news/the-xz-package-has-been-backdoored/][February 24th]] for Arch Linux's containers.
+The fallout became public likely with [[https://www.openwall.com/lists/oss-security/2024/03/29/4][Andres' mail]] sent on Fri, 29 Mar 2024 at 08:51:26 -0700. However the malware itself has been about since at latest [[https://lists.debian.org/debian-security-announce/2024/msg00057.html][Feburary 1st]] in Debian's non-Stable regions and [[https://archlinux.org/news/the-xz-package-has-been-backdoored/][February 24th]] for Arch Linux's containers.
 
 ** Is this a [[https://en.wikipedia.org/wiki/Zero-day_(computing)][0-day]]?
 
 [[https://www.cloudflare.com/learning/security/threats/zero-day-exploit/][Yes]]. Not only are there zero days to fix it before it is in the wild, as with most "zero" days there will be attackers who already knew about it long ago. Thus, it's more of a "a negative number of days have been provided to you to patch; please time travel if necessary" kind of zero-day, as per the usual.
 
-** Who?
+** Who is responsible for this?
 
 This is the least important question, but it seems to be the person who took ownership of the repository, or someone who was able to gain access to their account.
 We can combat the interest the "who?" by focusing on solutions and preventions for next time, instead.
@@ -50,7 +50,7 @@ We can combat the interest the "who?" by focusing on solutions and preventions f
 
 In order of how important they are to do.
 
-** Update!
+** Control a server? Update your system!
 
 If you're still reading and you have any control over any servers; stop and go update them. That's the most important thing to do; act now.
 
@@ -59,22 +59,22 @@ Your security best practices to-date and existing permission boundaries will be 
 
 ** Fund open source
 
-This one is a no-brainer. Loosely paraphrasing [[https://fosstodon.org/@AKernelPanic/112182227923027744][Aaron Prisk]]: we need to stop funding JunkCoin™️, NFT's, and AI so deeply that we forget that the software we have is the most valuable software to us.
+This one is a no-brainer. Loosely paraphrasing [[https://fosstodon.org/@AKernelPanic/112182227923027744][Aaron Prisk]]: we need to stop funding JunkCoin™️, NFT's, and AI so deeply that we forget that the software we already use for everything is the most valuable software to us.
 
-Unfortunately, funding sources are so fascinated by the latest trash-heap idea like "drones, but for your dog", and need to spend more money on increasing our fundamental and foundational reliabilities in software.
+Unfortunately, funding sources are so fascinated by the latest trash-heap idea like "drones, but for your dog". We need to instead spend more money on increasing our fundamental and foundational reliabilities in software.
 It's going to become one of those [[https://www.youtube.com/watch?v=RYidbrCbK7Q&t=100s][don't make me tap the sign]] sorts of things, as we have already seen this as a real problem, but I suppose I'll keep tapping the sign.
 
 If it isn't totally clear: this happened because the project received none of the value it merited in terms of time, energy, money, respect -- anything -- and we can fix that by at least funding it and others critical like it.
 
-** Treat community rudeness and low EQ as an actual security threat, based in social engineering
+** Treat community rudeness and low EQ as an actual security threat
 
-People may [[https://fosstodon.org/@carol@crabby.fyi/112186675147305199][joke]] (and that may not be a joke), but more harshly scrutinizing lack of empathy or politeness from users should definitely be one key take-away. When maintainers are bullied into handing over control of the code, bad actors can sit arbitrary lengths of time before springing their trap and even more frightening lengths of time before being caught.
+People may [[https://fosstodon.org/@carol@crabby.fyi/112186675147305199][joke]] (and that may not be a joke), but more harshly scrutinizing lack of empathy or politeness from users should definitely be one key take-away. When maintainers are bullied into handing over control of the code, bad actors can sit arbitrary lengths of time before springing their trap and even more frightening lengths of time before being caught. Belligerence is nothing short a tool in the social engineering toolbelt.
 
 This went unnoticed, because [[https://fosstodon.org/@swelljoe@mas.to/112186147777619530][we are /far/ too tolerant of abuse in open-source]].
 
 This one is going to be tricky, and I don't envy that we are moving into a less "fun" open-source world, but this is the norm for the party to end someday and for places like "the wild west" to mellow out into, well, just "the west".
 
-** Lint better
+** Lint more frequently and more aggressively
 
 There is now lots of evidence that [[https://gynvael.coldwind.pl/?lang=en&id=782][sophisticated]] [[https://en.wikipedia.org/wiki/Obfuscation_(software)][obfuscation]] [[https://www.geeksforgeeks.org/what-is-obfuscation/][techniques]] [[https://linuxiac.com/the-upstream-xz-tarballs-have-been-backdoored/][were used]] to achieve this, so it goes without saying that better attention to where linters and other [[https://owasp.org/www-community/controls/Static_Code_Analysis][static code analysis]] tools are struggling is of high importance. [[https://en.wikipedia.org/wiki/Valgrind][Valgrind]] is such a tool, and that's what tipped off Andres, the reporter, to the problem.
 

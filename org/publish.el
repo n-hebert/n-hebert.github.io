@@ -1,6 +1,7 @@
 ;; c/o https://github.com/justinhj/justinhj.github.io/blob/master/org/publish.el
 ;; -*- flycheck-disabled-checkers: (emacs-lisp-checkdoc); byte-compile-warnings: (not free-vars) -*-
 ;; Eval this buffer then M-x org-publish
+;; You can also use C-c C-e P f in a given file
 
 (defun this-file-name()
   (or load-file-name buffer-file-name (error "What?")))
