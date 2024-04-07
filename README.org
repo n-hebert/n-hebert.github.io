@@ -34,3 +34,8 @@ You can then write the blog.
 See org/publish.el in this repo for details.
 
 Do note that some trivial diffs currently pop up.
+
+** Linking between pages
+   Take a look at the output format, the date string gets turned into a directory.
+Links therefore need to look like `[../../YYYY/MM/DD/title.html]`, not the default link that Org will put.
+I'm sure there's a way to fix those on the org-publish, but it's not done yet.
