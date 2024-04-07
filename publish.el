@@ -1,12 +1,9 @@
-;; c/o https://github.com/justinhj/justinhj.github.io/blob/master/org/publish.el
 ;; -*- flycheck-disabled-checkers: (emacs-lisp-checkdoc); byte-compile-warnings: (not free-vars) -*-
 ;; Eval this buffer then M-x org-publish
 ;; You can also use C-c C-e P f in a given file
 
 (defun this-file-name()
-  (or load-file-name buffer-file-name (error "What?")))
-
-(message "folder %s" (this-file-name))
+  (or load-file-name buffer-file-name (error "No file name to report")))
 
 (setq github-project-root (locate-dominating-file (this-file-name) "_config.yml"))
 
@@ -35,3 +32,9 @@
     )
   )
 
+(defun my/publish ()
+  "Publish org posts to html"
+  (require 'org)
+  (org-publish-all))
+
+(provide 'publish)
