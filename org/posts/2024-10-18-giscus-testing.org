@@ -1,0 +1,38 @@
+#+TITLE: Adding Giscus comments
+#+STARTUP: showall
+#+OPTIONS: toc:nil
+#+BEGIN_EXPORT html
+---
+layout: post
+title: Adding Giscus comments
+tags: [giscus]
+---
+<link rel="stylesheet" type="text/css" href="/assets/main.css" />
+<link rel="stylesheet" type="text/css" href="/_orgcss/site.css" />
+#+END_EXPORT
+#+TOC: headlines 2
+
+* [[https://giscus.app/][Giscus]]
+
+Does it work?
+
+It should be below!
+
+#+BEGIN_EXPORT html
+<script src="https://giscus.app/client.js"
+        data-repo="n-hebert/n-hebert.github.io"
+        data-repo-id="R_kgDOHS-Zhg"
+        data-category="Announcements"
+        data-category-id="DIC_kwDOHS-Zhs4Cjehk"
+        data-mapping="title"
+        data-strict="0"
+        data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-input-position="bottom"
+        data-theme="preferred_color_scheme"
+        data-lang="en"
+        data-loading="lazy"
+        crossorigin="anonymous"
+        async>
+</script>
+#+END_EXPORT
